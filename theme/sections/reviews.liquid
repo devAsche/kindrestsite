@@ -23,7 +23,7 @@
       {%- endfor -%}
     </div>
 
-    {%- if count == 0 and section.settings.empty_text != blank -%}
+    {%- if count == 0 and section.blocks.size == 0 and section.settings.empty_text != blank -%}
       <p class="reviews__empty">{{ section.settings.empty_text }}</p>
     {%- endif -%}
 

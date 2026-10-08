@@ -1,4 +1,5 @@
 {%- assign p = product -%}
+{% render 'product-schema', product: product %}
 <section class="section buy surface-moon" id="buy" data-buy-section style="padding-top: clamp(32px, 5vw, 56px)">
   <div class="page-width">
     {%- if p != blank -%}

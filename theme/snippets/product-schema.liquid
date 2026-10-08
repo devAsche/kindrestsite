@@ -1,0 +1,40 @@
+{%- comment -%}
+  Product JSON-LD for search engines. aggregateRating is added only when real reviews exist
+  (standard reviews.rating / reviews.rating_count metafields, filled by the review app).
+{%- endcomment -%}
+{%- liquid
+  assign rating = product.metafields.reviews.rating.value
+  assign count = product.metafields.reviews.rating_count.value | default: 0
+  assign v = product.selected_or_first_available_variant
+-%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ request.origin | append: product.url | json }},
+  {%- if product.featured_media -%}
+  "image": [{{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }}],
+  {%- endif -%}
+  "description": {{ product.description | replace: '<', ' <' | strip_html | strip_newlines | strip | truncate: 500 | json }},
+  "brand": { "@type": "Brand", "name": {{ shop.name | json }} },
+  {%- if v.sku != blank -%}"sku": {{ v.sku | json }},{%- endif -%}
+  {%- if rating != blank and count > 0 -%}
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": {{ rating.rating | json }},
+    "bestRating": {{ rating.scale_max | json }},
+    "worstRating": {{ rating.scale_min | default: 1 | json }},
+    "reviewCount": {{ count | json }}
+  },
+  {%- endif -%}
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "lowPrice": {{ product.price_min | divided_by: 100.0 | json }},
+    "highPrice": {{ product.price_max | divided_by: 100.0 | json }},
+    "offerCount": {{ product.variants.size }},
+    "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}"
+  }
+}
+</script>
