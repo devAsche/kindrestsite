@@ -318,16 +318,23 @@
     var priceWas = $('[data-compare]', this.root);
     var save = $('[data-save]', this.root);
     if (priceNow) priceNow.textContent = formatMoney(variant.price);
-    var saving = this.savingFor(variant);
+    // Strike-through is only for a real compare-at price set in Shopify. A multi-pack saving is
+    // shown as a comparison with buying the single item separately, never as a former price.
+    var hasCompare = variant.compare_at_price > variant.price;
+    var pack = hasCompare ? null : this.packSaving(variant);
+    var priceRef = $('[data-price-ref]', this.root);
     if (priceWas) {
-      var was = variant.compare_at_price > variant.price ? variant.compare_at_price : (saving ? variant.price + saving : 0);
-      priceWas.textContent = was ? formatMoney(was) : '';
-      priceWas.hidden = !was;
+      priceWas.textContent = hasCompare ? formatMoney(variant.compare_at_price) : '';
+      priceWas.hidden = !hasCompare;
     }
     if (save) {
-      var amount = variant.compare_at_price > variant.price ? variant.compare_at_price - variant.price : saving;
-      save.hidden = !amount;
-      if (amount) save.textContent = 'You save ' + formatMoney(amount);
+      if (hasCompare) save.textContent = 'You save ' + formatMoney(variant.compare_at_price - variant.price);
+      else if (pack) save.textContent = 'You save ' + formatMoney(pack.amount) + ' vs. buying ' + pack.count + ' separately';
+      save.hidden = !(hasCompare || pack);
+    }
+    if (priceRef) {
+      if (pack) priceRef.textContent = pack.count + ' ' + pack.unit + ' bought separately: ' + formatMoney(pack.separate);
+      priceRef.hidden = !pack;
     }
 
     this.setAtc(variant.available, variant.available ? null : 'Sold out');
@@ -343,24 +350,28 @@
     this.syncSticky();
   };
   // Saving of a multi-pack vs buying the single option N times.
-  BuyForm.prototype.savingFor = function (variant) {
+  // Returns { amount, count, unit, separate } or null when there is no saving.
+  BuyForm.prototype.packSaving = function (variant) {
     var packIdx = this.product.packIndex;
-    if (packIdx === null || packIdx === undefined) return 0;
-    var val = variant.options[packIdx];
-    var m = String(val).match(/(\d+)/);
-    var n = m ? parseInt(m[1], 10) : 1;
-    if (n < 2) return 0;
-    var self = this;
+    if (packIdx === null || packIdx === undefined) return null;
+    var count = packCount(variant.options[packIdx]);
+    if (count < 2) return null;
     var single = this.product.variants.find(function (v) {
       return v.options.every(function (o, i) {
-        if (i === packIdx) { var mm = String(o).match(/(\d+)/); return !mm || parseInt(mm[1], 10) === 1; }
-        return o === variant.options[i];
+        return i === packIdx ? packCount(o) === 1 : o === variant.options[i];
       });
     });
-    if (!single || single === variant) return 0;
-    var diff = single.price * n - variant.price;
-    return diff > 0 ? diff : 0;
+    if (!single || single === variant) return null;
+    var separate = single.price * count;
+    if (separate <= variant.price) return null;
+    var unit = String(single.options[packIdx]).replace(/\d+/g, '').replace(/[-_]/g, ' ').trim().toLowerCase() || 'item';
+    if (!/s$/.test(unit)) unit += 's';
+    return { amount: separate - variant.price, count: count, unit: unit, separate: separate };
   };
+  function packCount(value) {
+    var m = String(value).match(/(\d+)/);
+    return m ? parseInt(m[1], 10) : 1;
+  }
   BuyForm.prototype.setAtc = function (enabled, text) {
     var label = $('[data-atc-label]', this.root);
     var price = $('[data-atc-price]', this.root);

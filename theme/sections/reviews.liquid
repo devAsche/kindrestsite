@@ -6,6 +6,13 @@
     assign count = 0
   endif
 -%}
+{%- liquid
+  assign hide_section = false
+  if section.settings.hide_when_empty and count == 0 and request.design_mode == false
+    assign hide_section = true
+  endif
+-%}
+{%- unless hide_section -%}
 <section class="section section--tight reviews surface-mist" id="reviews">
   <div class="page-width">
     <div class="center">
@@ -34,6 +41,7 @@
     {%- endif -%}
   </div>
 </section>
+{%- endunless -%}
 
 {% schema %}
 {
@@ -42,7 +50,8 @@
     { "type": "product", "id": "product", "label": "Product", "info": "Only needed on the home page. Product pages use their own product." },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reviews" },
     { "type": "text", "id": "title", "label": "Heading", "default": "Notes from Quiet Hours" },
-    { "type": "text", "id": "empty_text", "label": "Text when there are no reviews yet", "default": "Reviews from verified buyers will appear here." }
+    { "type": "text", "id": "empty_text", "label": "Text when there are no reviews yet", "default": "Reviews from verified buyers will appear here." },
+    { "type": "checkbox", "id": "hide_when_empty", "label": "Hide this section until there are reviews", "default": false, "info": "Uses the product's review count. Always shown in the theme editor." }
   ],
   "blocks": [{ "type": "@app" }],
   "presets": [{ "name": "Reviews" }]

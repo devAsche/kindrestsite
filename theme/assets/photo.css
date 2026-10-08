@@ -101,3 +101,8 @@ a.rating:hover .rating__count { text-decoration: underline; text-underline-offse
   border-radius: 999px !important; background: var(--night-800) !important; color: #fff !important; border: 0 !important; padding: 12px 22px !important;
 }
 .reviews .jdgm-rev__buyer-badge { background: var(--night-800) !important; border-radius: 999px; }
+
+/* ---------- Multi-pack reference (no strike-through: not a former price) ---------- */
+.buy__price:has(+ .buy__price-ref:not([hidden])) { margin-bottom: 6px; }
+.buy__price-ref { font-size: 14px; color: var(--ink-soft); margin: 0 0 18px; }
+.buy__price-ref[hidden] { display: none; }

@@ -72,11 +72,62 @@
     <h2 class="buy__title">{{ product.title }}</h2>
     <div class="buy__rating">{% render 'star-rating', product: product, link: '#reviews' %}</div>
 
+    {%- liquid
+      comment
+        Strike-through only for a real compare-at price. A multi-pack saving is shown as a comparison
+        with buying the single item separately (kept in sync with theme.js packSaving).
+      endcomment
+      assign has_compare = false
+      if current.compare_at_price > current.price
+        assign has_compare = true
+      endif
+      assign pack_saving = 0
+      if has_compare == false and pack_index != nil
+        assign pack_count = current.options[pack_index] | slice: 0 | plus: 0
+        if pack_count > 1
+          for v in product.variants
+            assign v_count = v.options[pack_index] | slice: 0 | plus: 0
+            if v_count == 1
+              assign same = true
+              for o in v.options
+                if forloop.index0 != pack_index and o != current.options[forloop.index0]
+                  assign same = false
+                endif
+              endfor
+              if same
+                assign pack_separate = v.price | times: pack_count
+                if pack_separate > current.price
+                  assign pack_saving = pack_separate | minus: current.price
+                  assign pack_unit = v.options[pack_index] | remove_first: '1' | replace: '-', ' ' | strip | downcase
+                  if pack_unit == blank
+                    assign pack_unit = 'item'
+                  endif
+                  assign unit_last = pack_unit | slice: -1
+                  unless unit_last == 's'
+                    assign pack_unit = pack_unit | append: 's'
+                  endunless
+                endif
+                break
+              endif
+            endif
+          endfor
+        endif
+      endif
+    -%}
     <div class="buy__price">
       <span class="buy__price-now" data-price>{{ current.price | money }}</span>
-      <s class="buy__price-was" data-compare {% unless current.compare_at_price > current.price %}hidden{% endunless %}>{{ current.compare_at_price | money }}</s>
-      <span class="buy__save" data-save hidden></span>
+      <s class="buy__price-was" data-compare {% unless has_compare %}hidden{% endunless %}>{% if has_compare %}{{ current.compare_at_price | money }}{% endif %}</s>
+      <span class="buy__save" data-save {% unless has_compare or pack_saving > 0 %}hidden{% endunless %}>
+        {%- if has_compare -%}
+          You save {{ current.compare_at_price | minus: current.price | money }}
+        {%- elsif pack_saving > 0 -%}
+          You save {{ pack_saving | money }} vs. buying {{ pack_count }} separately
+        {%- endif -%}
+      </span>
     </div>
+    <p class="buy__price-ref" data-price-ref {% unless pack_saving > 0 %}hidden{% endunless %}>
+      {%- if pack_saving > 0 -%}{{ pack_count }} {{ pack_unit }} bought separately: {{ pack_separate | money }}{%- endif -%}
+    </p>
 
     {%- if section.settings.show_description -%}
       <div class="buy__desc">{{ product.description }}</div>
