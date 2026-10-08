@@ -35,15 +35,16 @@
       {%- endif -%}
     </div>
     <div class="hero__visual">
-      <div class="hero__orbit" aria-hidden="true"></div>
+      {%- unless has_image -%}<div class="hero__orbit" aria-hidden="true"></div>{%- endunless -%}
       {%- if section.settings.badge != blank -%}
         <div class="hero__badge" aria-hidden="true">
           <svg viewBox="0 0 120 120"><defs><path id="BadgePath-{{ section.id }}" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0"/></defs>
-            <text><textPath href="#BadgePath-{{ section.id }}">{{ section.settings.badge | upcase }} ✦ {{ section.settings.badge | upcase }} ✦</textPath></text>
+            <text><textPath href="#BadgePath-{{ section.id }}" textLength="272" lengthAdjust="spacing">{{ section.settings.badge | upcase }} ✦</textPath></text>
           </svg>
           <span class="hero__badge-center">{{ section.settings.badge_center }}</span>
         </div>
       {%- endif -%}
+      {%- unless has_image -%}
       <div class="hero__moon" aria-hidden="true">
         {%- if section.settings.visual != blank -%}
           {{ section.settings.visual | image_url: width: 900 | image_tag: widths: '450, 700, 900', sizes: '(min-width: 861px) 40vw, 300px', alt: '' }}
@@ -96,6 +97,7 @@
           </div>
         {%- endif -%}
       {%- endif -%}
+      {%- endunless -%}
     </div>
   </div>
 </section>

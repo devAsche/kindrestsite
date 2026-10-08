@@ -27,6 +27,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'photo.css' | asset_url | stylesheet_tag }}
+    <style>:root { --night-texture: url('{{ 'kindrest-night-texture.webp' | file_url }}'); }</style>
     <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
 

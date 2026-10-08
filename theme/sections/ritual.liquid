@@ -11,10 +11,10 @@
       </svg>
       {%- for block in section.blocks -%}
         <div class="step" {{ block.shopify_attributes }}>
-          {%- if block.settings.image != blank -%}
-            <div class="step__img">{{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 600', sizes: '280px' }}</div>
-          {%- endif -%}
           <div class="step__star"><span>{{ forloop.index }}</span></div>
+          {%- if block.settings.image != blank -%}
+            <div class="step__img">{{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 600', sizes: '280px', alt: block.settings.image.alt | default: '' }}</div>
+          {%- endif -%}
           <h3>{{ block.settings.title }}</h3>
           <p>{{ block.settings.text }}</p>
         </div>

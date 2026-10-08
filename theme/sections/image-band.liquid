@@ -1,0 +1,33 @@
+<section class="image-band surface-night">
+  <div class="image-band__media">
+    {%- if section.settings.image != blank -%}
+      <div class="image-band__desktop" style="height:100%">{{ section.settings.image | image_url: width: 2000 | image_tag: loading: 'lazy', widths: '800, 1200, 1600, 2000', sizes: '100vw', alt: section.settings.image.alt | default: '' }}</div>
+      {%- assign mimg = section.settings.image_mobile | default: section.settings.image -%}
+      <div class="image-band__mobile">{{ mimg | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '600, 900, 1200', sizes: '100vw', alt: '' }}</div>
+    {%- endif -%}
+  </div>
+  <div class="page-width">
+    <div class="image-band__content reveal">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+      {%- if section.settings.text != blank -%}<p>{{ section.settings.text }}</p>{%- endif -%}
+      {%- if section.settings.cta_label != blank -%}<a class="btn btn--moon" href="{{ section.settings.cta_link | default: '#buy' }}">{{ section.settings.cta_label }}</a>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image band",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image (desktop, wide)" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Image (mobile, tall)" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Pairs well" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "Rest your neck, too" },
+    { "type": "textarea", "id": "text", "label": "Text" },
+    { "type": "text", "id": "cta_label", "label": "Button label" },
+    { "type": "url", "id": "cta_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Image band" }]
+}
+{% endschema %}

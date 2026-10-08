@@ -11,21 +11,24 @@
           "type": "step",
           "settings": {
             "title": "Chill",
-            "text": "Keep it in the freezer so it's ready whenever you are."
+            "text": "Keep it in the freezer so it's ready whenever you are.",
+            "image": "shopify://shop_images/kindrest-step-chill.webp"
           }
         },
         "s2": {
           "type": "step",
           "settings": {
             "title": "Pull on",
-            "text": "Stretch it over your head and down over your eyes. No straps, no Velcro."
+            "text": "Stretch it over your head and down over your eyes. No straps, no Velcro.",
+            "image": "shopify://shop_images/kindrest-step-pullon.webp"
           }
         },
         "s3": {
           "type": "step",
           "settings": {
             "title": "Rest",
-            "text": "Dim the lights, turn the phone face down, and take a quiet break."
+            "text": "Dim the lights, turn the phone face down, and take a quiet break.",
+            "image": "shopify://shop_images/kindrest-step-rest.webp"
           }
         }
       },

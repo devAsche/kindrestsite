@@ -3,7 +3,9 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "product": "kindrest-quiet-hours-cap"
+        "product": "kindrest-quiet-hours-cap",
+        "image": "shopify://shop_images/kindrest-hero-desktop.webp",
+        "image_mobile": "shopify://shop_images/kindrest-hero-mobile.webp"
       }
     },
     "buy": {
@@ -19,21 +21,24 @@
           "type": "step",
           "settings": {
             "title": "Chill",
-            "text": "Keep it in the freezer so it's ready whenever you are."
+            "text": "Keep it in the freezer so it's ready whenever you are.",
+            "image": "shopify://shop_images/kindrest-step-chill.webp"
           }
         },
         "s2": {
           "type": "step",
           "settings": {
             "title": "Pull on",
-            "text": "Stretch it over your head and down over your eyes. No straps, no Velcro."
+            "text": "Stretch it over your head and down over your eyes. No straps, no Velcro.",
+            "image": "shopify://shop_images/kindrest-step-pullon.webp"
           }
         },
         "s3": {
           "type": "step",
           "settings": {
             "title": "Rest",
-            "text": "Dim the lights, turn the phone face down, and take a quiet break."
+            "text": "Dim the lights, turn the phone face down, and take a quiet break.",
+            "image": "shopify://shop_images/kindrest-step-rest.webp"
           }
         }
       },
@@ -55,7 +60,8 @@
           "settings": {
             "icon": "desk",
             "title": "After a long desk day",
-            "text": "For the days the screen has been on since morning. Close the laptop, pull it on, and step away for a while."
+            "text": "For the days the screen has been on since morning. Close the laptop, pull it on, and step away for a while.",
+            "image": "shopify://shop_images/kindrest-card-desk.webp"
           }
         },
         "c2": {
@@ -63,7 +69,8 @@
           "settings": {
             "icon": "moon",
             "title": "On warm nights",
-            "text": "Keep one chilling on standby for the nights that run warm, so a cool break is always within reach."
+            "text": "Keep one chilling on standby for the nights that run warm, so a cool break is always within reach.",
+            "image": "shopify://shop_images/kindrest-card-warm.webp"
           }
         },
         "c3": {
@@ -71,7 +78,8 @@
           "settings": {
             "icon": "two",
             "title": "For the two of you",
-            "text": "The 2-Pack means one each — or one to wear while the other chills in the freezer."
+            "text": "The 2-Pack means one each — or one to wear while the other chills in the freezer.",
+            "image": "shopify://shop_images/kindrest-card-two.webp"
           }
         }
       },

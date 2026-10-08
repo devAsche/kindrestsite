@@ -10,28 +10,92 @@
   {
     "name": "Brand",
     "settings": [
-      { "type": "image_picker", "id": "favicon", "label": "Favicon" }
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      }
     ]
   },
   {
     "name": "Playful touches",
     "settings": [
-      { "type": "checkbox", "id": "enable_intro", "label": "Screen-to-night intro on the home page", "default": true, "info": "Shown once per visit. Skips automatically for visitors who prefer reduced motion." },
-      { "type": "text", "id": "intro_line_1", "label": "Intro line (bright screen)", "default": "Your screen has been bright all day." },
-      { "type": "text", "id": "intro_line_2", "label": "Intro line (night)", "default": "Let's dim the lights." },
-      { "type": "checkbox", "id": "enable_star_trail", "label": "Star trail behind the cursor (desktop)", "default": true },
-      { "type": "checkbox", "id": "enable_quiet_toggle", "label": "Quiet Hours dim toggle in the header", "default": true }
+      {
+        "type": "checkbox",
+        "id": "enable_intro",
+        "label": "Screen-to-night intro on the home page",
+        "default": true,
+        "info": "Shown once per visit. Skips automatically for visitors who prefer reduced motion."
+      },
+      {
+        "type": "text",
+        "id": "intro_line_1",
+        "label": "Intro line (bright screen)",
+        "default": "Your screen has been bright all day."
+      },
+      {
+        "type": "text",
+        "id": "intro_line_2",
+        "label": "Intro line (night)",
+        "default": "Let's dim the lights."
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_star_trail",
+        "label": "Star trail behind the cursor (desktop)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_quiet_toggle",
+        "label": "Quiet Hours dim toggle in the header",
+        "default": true
+      }
     ]
   },
   {
     "name": "Cart",
     "settings": [
-      { "type": "checkbox", "id": "enable_upsell", "label": "Show an add-on in the cart drawer", "default": true },
-      { "type": "product", "id": "upsell_product", "label": "Add-on product" },
-      { "type": "text", "id": "upsell_label", "label": "Add-on label", "default": "Pairs well with" },
-      { "type": "text", "id": "upsell_text", "label": "Add-on text", "default": "A soft wrap for your neck and shoulders." },
-      { "type": "text", "id": "cart_note_text", "label": "Note above checkout", "default": "Shipping and taxes are calculated at checkout." },
-      { "type": "url", "id": "empty_cart_url", "label": "Empty cart button link" }
+      {
+        "type": "checkbox",
+        "id": "enable_upsell",
+        "label": "Show an add-on in the cart drawer",
+        "default": true
+      },
+      {
+        "type": "product",
+        "id": "upsell_product",
+        "label": "Add-on product"
+      },
+      {
+        "type": "image_picker",
+        "id": "upsell_image",
+        "label": "Add-on image",
+        "info": "Optional. Square image; replaces the product photo in the cart."
+      },
+      {
+        "type": "text",
+        "id": "upsell_label",
+        "label": "Add-on label",
+        "default": "Pairs well with"
+      },
+      {
+        "type": "text",
+        "id": "upsell_text",
+        "label": "Add-on text",
+        "default": "A soft wrap for your neck and shoulders."
+      },
+      {
+        "type": "text",
+        "id": "cart_note_text",
+        "label": "Note above checkout",
+        "default": "Shipping and taxes are calculated at checkout."
+      },
+      {
+        "type": "url",
+        "id": "empty_cart_url",
+        "label": "Empty cart button link"
+      }
     ]
   }
 ]

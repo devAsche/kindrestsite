@@ -45,7 +45,7 @@
         <div class="upsell" data-upsell data-product-id="{{ up.id }}" data-variant="{{ up.selected_or_first_available_variant.id }}" {% if in_cart or cart.item_count == 0 %}hidden{% endif %}>
           <div class="upsell__label">{{ settings.upsell_label }}</div>
           <div class="upsell__row">
-            <div class="upsell__img">{% if up.featured_media %}{{ up.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}{% endif %}</div>
+            <div class="upsell__img{% if settings.upsell_image != blank %} upsell__img--photo{% endif %}">{% if settings.upsell_image != blank %}{{ settings.upsell_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}{% elsif up.featured_media %}{{ up.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}{% endif %}</div>
             <div>
               <div class="upsell__title">{{ up.title }} · {{ up.price | money }}</div>
               {%- if settings.upsell_text != blank -%}<p class="upsell__text">{{ settings.upsell_text }}</p>{%- endif -%}

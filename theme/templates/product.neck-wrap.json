@@ -1,0 +1,78 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "eyebrow": "Pairs well with your cap",
+        "pack_badge": "",
+        "atc_label": "Add to cart"
+      }
+    },
+    "band": {
+      "type": "image-band",
+      "settings": {
+        "image": "shopify://shop_images/kindrest-neckwrap-wide.webp",
+        "image_mobile": "shopify://shop_images/kindrest-neckwrap-tall.webp",
+        "eyebrow": "Quiet Hours, head to shoulders",
+        "title": "Rest your neck, too",
+        "text": "A soft wrap that sits around your neck and shoulders. Keep it in the freezer next to your cap, so both are ready when you are.",
+        "cta_label": "Choose your size",
+        "cta_link": "#buy"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "item",
+          "settings": {
+            "question": "How do I use it?",
+            "answer": "<p>Keep it in the freezer. When you want a quiet break, wrap it around your neck and rest.</p>"
+          }
+        },
+        "q2": {
+          "type": "item",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>Orders are delivered to US addresses in about 5–11 days.</p>"
+          }
+        },
+        "q3": {
+          "type": "item",
+          "settings": {
+            "question": "What if something's wrong with my order?",
+            "answer": "<p>If it arrives damaged, defective, or isn't what you ordered, email a photo to contact@kindreststore.com within 30 days of delivery and we'll make it right. No need to send anything back.</p>"
+          }
+        },
+        "q4": {
+          "type": "item",
+          "settings": {
+            "question": "Is this a medical device?",
+            "answer": "<p>No. Kindrest products are made for rest and comfort and are not medical devices. If you have a health concern, please talk to your doctor.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ],
+      "settings": {}
+    },
+    "promise": {
+      "type": "promise",
+      "settings": {
+        "edge_from": "#ffffff",
+        "cta_label": "Shop the Quiet Hours Cap",
+        "cta_link": "/products/kindrest-quiet-hours-cap"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "band",
+    "faq",
+    "promise"
+  ]
+}
