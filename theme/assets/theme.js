@@ -557,12 +557,15 @@
         var line = i + 1;
         var img = item.image ? '<img src="' + sizedImage(item.image, 200) + '" alt="" loading="lazy" width="84" height="84">' : '';
         var variant = item.variant_title && item.variant_title !== 'Default Title' ? '<div class="cart-line__variant">' + escapeHtml(item.variant_title) + '</div>' : '';
+        // Strike-through only when Shopify actually applied a discount to the line.
         var price = item.original_line_price > item.final_line_price
-          ? '<s style="font-weight:400;color:var(--ink-soft);font-size:13px;display:block">' + formatMoney(item.original_line_price) + '</s>' + formatMoney(item.final_line_price)
+          ? '<s class="cart-line__was">' + formatMoney(item.original_line_price) + '</s>' + formatMoney(item.final_line_price)
           : formatMoney(item.final_line_price);
+        var discount = item.line_level_total_discount > 0
+          ? '<div class="cart-line__discount">✦ Set discount −' + formatMoney(item.line_level_total_discount) + '</div>' : '';
         return '<div class="cart-line">' +
           '<div class="cart-line__img">' + img + '</div>' +
-          '<div><a class="cart-line__title" href="' + item.url + '">' + escapeHtml(item.product_title) + '</a>' + variant +
+          '<div><a class="cart-line__title" href="' + item.url + '">' + escapeHtml(item.product_title) + '</a>' + variant + discount +
           '<div class="qty"><button type="button" data-line="' + line + '" data-line-qty="' + (item.quantity - 1) + '" aria-label="Decrease quantity">−</button>' +
           '<input type="number" value="' + item.quantity + '" readonly aria-label="Quantity">' +
           '<button type="button" data-line="' + line + '" data-line-qty="' + (item.quantity + 1) + '" aria-label="Increase quantity">+</button></div>' +
@@ -570,12 +573,24 @@
           '<div class="cart-line__price">' + price + '</div></div>';
       }).join('');
       $('[data-cart-subtotal]', this.drawer).textContent = formatMoney(cart.total_price);
+      var savingsRow = $('[data-cart-savings-row]', this.drawer);
+      if (savingsRow) {
+        savingsRow.hidden = !(cart.total_discount > 0);
+        $('[data-cart-savings]', savingsRow).textContent = '−' + formatMoney(cart.total_discount || 0);
+      }
 
       var up = $('[data-upsell]', this.drawer);
       if (up) {
         var upId = Number(up.getAttribute('data-product-id'));
         var hasUpsell = cart.items.some(function (it) { return it.product_id === upId; });
         up.hidden = cart.item_count === 0 || hasUpsell;
+        // Set offer: only promise the discount when a qualifying cap (e.g. "1 Cap") is in the cart.
+        var capId = Number(up.getAttribute('data-offer-cap'));
+        var qual = up.getAttribute('data-offer-value');
+        var qualifies = !!capId && cart.items.some(function (it) {
+          return it.product_id === capId && (it.variant_options || []).indexOf(qual) > -1;
+        });
+        up.classList.toggle('is-offer', qualifies);
       }
     },
     open: function () {

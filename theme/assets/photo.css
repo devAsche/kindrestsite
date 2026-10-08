@@ -119,3 +119,23 @@ a.rating:hover .rating__count { text-decoration: underline; text-underline-offse
      reset; on mobile the gallery is position: relative, so that offset pushed it over the title. */
   .gallery { top: 0; }
 }
+
+/* ---------- Set offer (Cap + Neck Wrap) ---------- */
+.offer-pill { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--night-800); background: var(--lavender-soft); padding: 5px 12px; border-radius: 999px; }
+.offer-note { display: flex; gap: 10px; align-items: flex-start; margin: -4px 0 18px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--lavender-soft); color: var(--ink); font-size: 14px; line-height: 1.5; }
+.offer-note p { margin: 0; min-width: 0; }
+.offer-note__star { color: #c9a54a; line-height: 1.5; }
+.offer-note a { font-weight: 800; white-space: nowrap; text-underline-offset: 3px; }
+.cart-line__was { display: block; font-weight: 400; color: var(--ink-soft); font-size: 13px; }
+.cart-line__discount { font-size: 13px; font-weight: 700; color: var(--night-700); margin-top: 2px; }
+.cart-line > div { min-width: 0; }
+.drawer__savings, .cart-savings { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; color: var(--night-700); margin-bottom: 4px; }
+.drawer__savings[hidden] { display: none; }
+.cart-savings { margin-top: 24px; }
+.cart-savings + div { margin-top: 4px !important; }
+.upsell__when-offer { display: none; }
+.upsell.is-offer .upsell__when-offer { display: block; }
+.upsell.is-offer .upsell__when-plain { display: none; }
+.upsell__offer { font-size: 13px; color: var(--ink-soft); margin: 4px 0 0; line-height: 1.45; }
+.upsell__offer strong { color: var(--ink); font-size: 14px; }
+.upsell__title span { overflow-wrap: anywhere; }

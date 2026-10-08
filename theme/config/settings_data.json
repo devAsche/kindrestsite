@@ -13,6 +13,11 @@
         "disabled": false,
         "settings": {}
       }
-    }
+    },
+    "enable_set_offer": true,
+    "set_offer_percent": 20,
+    "set_offer_qualifying_value": "1 Cap",
+    "set_offer_cap": "kindrest-quiet-hours-cap",
+    "set_offer_addon": "kindrest-quiet-hours-neck-wrap"
   }
 }

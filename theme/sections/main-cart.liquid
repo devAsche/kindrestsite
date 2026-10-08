@@ -8,15 +8,19 @@
             <div>
               <a class="cart-line__title" href="{{ item.url }}">{{ item.product.title }}</a>
               {%- unless item.product.has_only_default_variant -%}<div class="cart-line__variant">{{ item.variant.title }}</div>{%- endunless -%}
+              {%- if item.line_level_total_discount > 0 -%}<div class="cart-line__discount">✦ Set discount −{{ item.line_level_total_discount | money }}</div>{%- endif -%}
               <div class="field" style="max-width:110px;margin:8px 0 0">
                 <label for="Qty-{{ forloop.index }}" class="visually-hidden">Quantity</label>
                 <input id="Qty-{{ forloop.index }}" type="number" name="updates[]" value="{{ item.quantity }}" min="0">
               </div>
               <a class="cart-line__remove" style="margin:0" href="{{ item.url_to_remove }}">Remove</a>
             </div>
-            <div class="cart-line__price">{{ item.final_line_price | money }}</div>
+            {% render 'cart-line-price', item: item %}
           </div>
         {%- endfor -%}
+        {%- if cart.total_discount > 0 -%}
+          <div class="cart-savings"><span>Savings</span><span>−{{ cart.total_discount | money }}</span></div>
+        {%- endif -%}
         <div style="display:flex;justify-content:space-between;align-items:center;margin:24px 0 8px;font-weight:800;font-size:20px"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
         <p class="form-note">{{ settings.cart_note_text }}</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">

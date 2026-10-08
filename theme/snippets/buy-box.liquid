@@ -129,6 +129,10 @@
       {%- if pack_saving > 0 -%}{{ pack_count }} {{ pack_unit }} bought separately: {{ pack_separate | money }}{%- endif -%}
     </p>
 
+    {%- if settings.enable_set_offer and settings.set_offer_addon != blank and settings.set_offer_addon.id == product.id -%}
+      {% render 'set-offer', mode: 'note', addon: current, cap: settings.set_offer_cap %}
+    {%- endif -%}
+
     {%- if section.settings.show_description -%}
       <div class="buy__desc">{{ product.description }}</div>
     {%- endif -%}

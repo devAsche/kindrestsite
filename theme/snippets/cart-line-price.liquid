@@ -1,0 +1,10 @@
+{%- comment -%}
+  Line price for the cart page / drawer. A strike-through is shown only when Shopify has actually
+  applied a discount to the line (original_line_price > final_line_price).
+{%- endcomment -%}
+<div class="cart-line__price">
+  {%- if item.original_line_price > item.final_line_price -%}
+    <s class="cart-line__was">{{ item.original_line_price | money }}</s>
+  {%- endif -%}
+  {{ item.final_line_price | money }}
+</div>

@@ -20,6 +20,7 @@
             <div>
               <a class="cart-line__title" href="{{ item.url }}">{{ item.product.title }}</a>
               {%- unless item.product.has_only_default_variant -%}<div class="cart-line__variant">{{ item.variant.title }}</div>{%- endunless -%}
+              {%- if item.line_level_total_discount > 0 -%}<div class="cart-line__discount">✦ Set discount −{{ item.line_level_total_discount | money }}</div>{%- endif -%}
               <div class="qty">
                 <button type="button" data-line="{{ forloop.index }}" data-line-qty="{{ item.quantity | minus: 1 }}" aria-label="Decrease quantity">−</button>
                 <input type="number" value="{{ item.quantity }}" readonly aria-label="Quantity">
@@ -27,7 +28,7 @@
               </div>
               <button type="button" class="cart-line__remove" data-line="{{ forloop.index }}" data-line-qty="0">Remove</button>
             </div>
-            <div class="cart-line__price">{{ item.final_line_price | money }}</div>
+            {% render 'cart-line-price', item: item %}
           </div>
         {%- endfor -%}
       </div>
@@ -41,14 +42,32 @@
               assign in_cart = true
             endif
           endfor
+          assign offer_on = false
+          assign offer_qualifies = false
+          if settings.enable_set_offer and settings.set_offer_addon.id == up.id and settings.set_offer_cap != blank
+            assign offer_on = true
+            for item in cart.items
+              if item.product_id == settings.set_offer_cap.id and item.variant.options contains settings.set_offer_qualifying_value
+                assign offer_qualifies = true
+              endif
+            endfor
+          endif
+          assign offer_keep = 100 | minus: settings.set_offer_percent
+          assign offer_price = up.price | times: offer_keep | divided_by: 100
         -%}
-        <div class="upsell" data-upsell data-product-id="{{ up.id }}" data-variant="{{ up.selected_or_first_available_variant.id }}" {% if in_cart or cart.item_count == 0 %}hidden{% endif %}>
-          <div class="upsell__label">{{ settings.upsell_label }}</div>
+        <div class="upsell{% if offer_qualifies %} is-offer{% endif %}" data-upsell data-product-id="{{ up.id }}" data-variant="{{ up.selected_or_first_available_variant.id }}"
+          {% if offer_on %}data-offer-cap="{{ settings.set_offer_cap.id }}" data-offer-value="{{ settings.set_offer_qualifying_value | escape }}"{% endif %}
+          {% if in_cart or cart.item_count == 0 %}hidden{% endif %}>
+          <div class="upsell__label upsell__when-plain">{{ settings.upsell_label }}</div>
+          {%- if offer_on -%}<div class="upsell__label upsell__when-offer">Set offer · {{ settings.set_offer_percent }}% off with your cap</div>{%- endif -%}
           <div class="upsell__row">
             <div class="upsell__img{% if settings.upsell_image != blank %} upsell__img--photo{% endif %}">{% if settings.upsell_image != blank %}{{ settings.upsell_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}{% elsif up.featured_media %}{{ up.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}{% endif %}</div>
             <div>
-              <div class="upsell__title">{{ up.title }} · {{ up.price | money }}</div>
-              {%- if settings.upsell_text != blank -%}<p class="upsell__text">{{ settings.upsell_text }}</p>{%- endif -%}
+              <div class="upsell__title"><span>{{ up.title }}</span><span class="upsell__when-plain"> · {{ up.price | money }}</span></div>
+              {%- if offer_on -%}
+                <p class="upsell__offer upsell__when-offer"><strong>{{ offer_price | money }} with your cap</strong> ({{ up.price | money }} on its own)<br>Applied automatically at checkout.</p>
+              {%- endif -%}
+              {%- if settings.upsell_text != blank -%}<p class="upsell__text upsell__when-plain">{{ settings.upsell_text }}</p>{%- endif -%}
             </div>
           </div>
           <div class="upsell__actions">
@@ -67,6 +86,7 @@
     </div>
 
     <div class="drawer__foot" data-cart-foot {% if cart.item_count == 0 %}hidden{% endif %}>
+      <div class="drawer__savings" data-cart-savings-row {% if cart.total_discount == 0 %}hidden{% endif %}><span>Savings</span><span data-cart-savings>−{{ cart.total_discount | money }}</span></div>
       <div class="drawer__subtotal"><span>Subtotal</span><span data-cart-subtotal>{{ cart.total_price | money }}</span></div>
       <p class="drawer__note">{{ settings.cart_note_text }}</p>
       <form action="{{ routes.cart_url }}" method="post">

@@ -16,10 +16,14 @@
         {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
         <h2 class="pair__title">{{ section.settings.title }}</h2>
         {%- if section.settings.text != blank -%}<p class="pair__text">{{ section.settings.text }}</p>{%- endif -%}
-        <div class="pair__meta">
-          <span class="pair__name">{{ p.title }}</span>
-          <span class="pair__price">{% if p.price_varies %}From {% endif %}{{ p.price_min | money }}</span>
-        </div>
+        {%- if settings.enable_set_offer and settings.set_offer_addon != blank and settings.set_offer_addon.id == p.id and settings.set_offer_cap.id == product.id -%}
+          {% render 'set-offer', mode: 'pair', addon: p %}
+        {%- else -%}
+          <div class="pair__meta">
+            <span class="pair__name">{{ p.title }}</span>
+            <span class="pair__price">{% if p.price_varies %}From {% endif %}{{ p.price_min | money }}</span>
+          </div>
+        {%- endif -%}
         <span class="btn pair__btn">{{ section.settings.cta_label }} <span aria-hidden="true">→</span></span>
       </div>
     </a>
@@ -47,6 +51,10 @@
   .pair__name { font-weight: 700; }
   .pair__price { font-weight: 800; color: var(--ink); }
   .pair__btn { min-height: 48px; padding: 0 22px; font-size: 15px; }
+  .pair__body .offer-pill { margin: 2px 0 10px; }
+  .pair__offer-price { margin: 0 0 6px; color: var(--ink-soft); }
+  .pair__offer-price strong { color: var(--ink); font-size: 17px; }
+  .pair__fine { font-size: 13px; color: var(--ink-soft); margin: 0 0 18px; max-width: 460px; }
   @media (max-width: 640px) {
     .pair__card { grid-template-columns: 1fr; padding: 14px; }
     .pair__img { aspect-ratio: 4 / 3; }

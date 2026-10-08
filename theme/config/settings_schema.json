@@ -97,5 +97,49 @@
         "label": "Empty cart button link"
       }
     ]
+  },
+  {
+    "name": "Set offer",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Promotes the automatic discount 'Cap + Neck Wrap'. The percentage here must match the discount set in Shopify (Discounts). Cart lines always show the discount Shopify actually applied."
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_set_offer",
+        "label": "Show the set offer",
+        "default": false
+      },
+      {
+        "type": "number",
+        "id": "set_offer_percent",
+        "label": "Discount on the add-on (%)",
+        "default": 20
+      },
+      {
+        "type": "text",
+        "id": "set_offer_qualifying_value",
+        "label": "Qualifying option value",
+        "default": "1 Cap",
+        "info": "The cap option that unlocks the offer (must match the variant option exactly)."
+      },
+      {
+        "type": "product",
+        "id": "set_offer_cap",
+        "label": "Qualifying product (cap)"
+      },
+      {
+        "type": "product",
+        "id": "set_offer_addon",
+        "label": "Discounted add-on (neck wrap)"
+      },
+      {
+        "type": "text",
+        "id": "set_offer_note",
+        "label": "Fine print on the cap page",
+        "default": "Applies to the 1 Cap option, not the 2-Pack. One discounted wrap per cap. Applied automatically at checkout."
+      }
+    ]
   }
 ]
