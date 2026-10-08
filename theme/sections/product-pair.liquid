@@ -1,0 +1,71 @@
+{%- comment -%}
+  Small cross-sell card for a companion product. Title, price, image and link all come from the product.
+{%- endcomment -%}
+{%- assign p = section.settings.product -%}
+{%- if p != blank and p.id != product.id -%}
+<section class="section section--tight pair surface-moon" id="pair-{{ section.id }}">
+  <div class="page-width">
+    <a class="pair__card reveal" href="{{ p.url }}">
+      <div class="pair__img">
+        {%- assign img = section.settings.image | default: p.featured_media -%}
+        {%- if img -%}
+          {{ img | image_url: width: 640 | image_tag: loading: 'lazy', widths: '320, 480, 640', sizes: '(min-width: 861px) 260px, 40vw', alt: p.title }}
+        {%- endif -%}
+      </div>
+      <div class="pair__body">
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h2 class="pair__title">{{ section.settings.title }}</h2>
+        {%- if section.settings.text != blank -%}<p class="pair__text">{{ section.settings.text }}</p>{%- endif -%}
+        <div class="pair__meta">
+          <span class="pair__name">{{ p.title }}</span>
+          <span class="pair__price">{% if p.price_varies %}From {% endif %}{{ p.price_min | money }}</span>
+        </div>
+        <span class="btn pair__btn">{{ section.settings.cta_label }} <span aria-hidden="true">→</span></span>
+      </div>
+    </a>
+  </div>
+</section>
+{%- elsif request.design_mode and p == blank -%}
+<section class="section section--tight surface-moon"><div class="page-width"><p class="reviews__editor-note">Choose a product for this section in the theme editor.</p></div></section>
+{%- endif -%}
+
+{% stylesheet %}
+  .pair__card {
+    display: grid; grid-template-columns: 260px 1fr; gap: clamp(20px, 4vw, 44px); align-items: center;
+    max-width: 920px; margin: 0 auto; padding: 18px; border-radius: var(--radius-lg);
+    background: var(--mist); text-decoration: none; color: inherit;
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  }
+  .pair__card:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); }
+  .pair__img { aspect-ratio: 1 / 1; border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .pair__img img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+  .pair__body { padding: 8px 12px 8px 0; }
+  .pair__body .eyebrow { margin-bottom: 8px; }
+  .pair__title { font-size: clamp(26px, 3.2vw, 36px); margin-bottom: 8px; }
+  .pair__text { color: var(--ink-soft); max-width: 460px; }
+  .pair__meta { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; margin: 4px 0 18px; }
+  .pair__name { font-weight: 700; }
+  .pair__price { font-weight: 800; color: var(--ink); }
+  .pair__btn { min-height: 48px; padding: 0 22px; font-size: 15px; }
+  @media (max-width: 640px) {
+    .pair__card { grid-template-columns: 1fr; padding: 14px; }
+    .pair__img { aspect-ratio: 4 / 3; }
+    .pair__body { padding: 4px 6px 8px; }
+    .pair__btn { width: 100%; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Pairs well with",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Optional. Uses the product's main image when empty." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Pairs well with your cap" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "Rest your neck, too" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "A soft wrap for your neck and shoulders. Keep it in the freezer next to your cap, so both are ready for your quiet hours." },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "See the Neck Wrap" }
+  ],
+  "presets": [{ "name": "Pairs well with" }]
+}
+{% endschema %}
