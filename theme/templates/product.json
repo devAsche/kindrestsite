@@ -156,10 +156,15 @@
       "settings": {
         "edge_from": "#ffffff"
       }
+    },
+    "reviews": {
+      "type": "reviews",
+      "settings": {}
     }
   },
   "order": [
     "main",
+    "reviews",
     "ritual",
     "compare",
     "faq",

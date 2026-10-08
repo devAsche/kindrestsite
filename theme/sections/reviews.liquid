@@ -1,0 +1,50 @@
+{%- liquid
+  assign p = section.settings.product | default: product
+  if p != blank
+    assign count = p.metafields.reviews.rating_count.value | default: 0
+  else
+    assign count = 0
+  endif
+-%}
+<section class="section section--tight reviews surface-mist" id="reviews">
+  <div class="page-width">
+    <div class="center">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+      {%- if p != blank -%}<div class="reviews__summary">{% render 'star-rating', product: p %}</div>{%- endif -%}
+    </div>
+
+    <div class="reviews__widget">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            {% render block %}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if count == 0 and section.settings.empty_text != blank -%}
+      <p class="reviews__empty">{{ section.settings.empty_text }}</p>
+    {%- endif -%}
+
+    {%- if request.design_mode and section.blocks.size == 0 -%}
+      <div class="reviews__editor-note">
+        <strong>Add your review app here:</strong> click “Add block” in this section and choose the review widget from your review app (for example Judge.me → Review Widget). This note only shows in the theme editor.
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Reviews",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product", "info": "Only needed on the home page. Product pages use their own product." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reviews" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "Notes from Quiet Hours" },
+    { "type": "text", "id": "empty_text", "label": "Text when there are no reviews yet", "default": "Reviews from verified buyers will appear here." }
+  ],
+  "blocks": [{ "type": "@app" }],
+  "presets": [{ "name": "Reviews" }]
+}
+{% endschema %}

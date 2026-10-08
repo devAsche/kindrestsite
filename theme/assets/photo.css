@@ -66,3 +66,38 @@
   .image-band { align-items: center; }
   .image-band__content { padding-top: 96px; padding-bottom: 120px; }
 }
+
+/* ---------- Star rating + reviews ---------- */
+.rating { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-soft); text-decoration: none; }
+a.rating:hover .rating__count { text-decoration: underline; text-underline-offset: 3px; }
+.rating__stars {
+  --star-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z'/%3E%3C/svg%3E");
+  position: relative; display: inline-block; width: 92px; height: 18px;
+  background: linear-gradient(90deg, #c9a54a var(--rating), var(--lavender) var(--rating));
+  -webkit-mask: var(--star-shape) repeat-x left center / 18.4px 18px; mask: var(--star-shape) repeat-x left center / 18.4px 18px;
+}
+.rating__text { font-weight: 800; color: var(--ink); }
+.buy__rating:empty { display: none; }
+.reviews__summary { margin-top: -4px; }
+.reviews__summary .rating { font-size: 16px; }
+.reviews__widget { max-width: 980px; margin: 32px auto 0; }
+.reviews__widget:empty { display: none; }
+.reviews__empty { text-align: center; color: var(--ink-soft); margin: 18px auto 0; }
+.reviews__empty::before { content: '✦'; display: block; color: #c9a54a; margin-bottom: 8px; }
+.reviews__editor-note { max-width: 640px; margin: 24px auto 0; padding: 16px 20px; border-radius: var(--radius); border: 1.5px dashed var(--lavender); background: #fff; font-size: 14px; color: var(--ink-soft); }
+
+/* Judge.me widget — match the theme (safe overrides; app settings still apply) */
+.reviews .jdgm-widget, .reviews .jdgm-rev-widg { font-family: var(--font-body); color: var(--ink); }
+.reviews .jdgm-rev-widg { padding: 0 !important; border: 0 !important; }
+.reviews .jdgm-rev-widg__title { display: none; }
+.reviews .jdgm-star { color: #c9a54a !important; }
+.reviews .jdgm-rev {
+  background: #fff; border: 0 !important; border-radius: var(--radius); padding: 22px 24px !important; margin-bottom: 14px;
+  box-shadow: 0 10px 30px -18px rgba(14, 22, 48, 0.25);
+}
+.reviews .jdgm-rev__title { font-family: var(--font-display); font-weight: 400; font-size: 19px; }
+.reviews .jdgm-rev__body { color: var(--ink-soft); }
+.reviews .jdgm-write-rev-link, .reviews .jdgm-ask-question-btn {
+  border-radius: 999px !important; background: var(--night-800) !important; color: #fff !important; border: 0 !important; padding: 12px 22px !important;
+}
+.reviews .jdgm-rev__buyer-badge { background: var(--night-800) !important; border-radius: 999px; }

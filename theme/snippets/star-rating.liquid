@@ -1,0 +1,16 @@
+{%- comment -%}
+  Star rating from the standard Shopify review metafields (filled by review apps such as Judge.me).
+  Renders nothing until the product has at least one review.
+  Params: product, link (optional anchor)
+{%- endcomment -%}
+{%- assign rating = product.metafields.reviews.rating.value -%}
+{%- assign count = product.metafields.reviews.rating_count.value | default: 0 -%}
+{%- if rating != blank and count > 0 -%}
+  {%- assign pct = rating.rating | divided_by: rating.scale_max | times: 100 -%}
+  {%- if link != blank -%}<a class="rating" href="{{ link }}">{%- else -%}<span class="rating">{%- endif -%}
+    <span class="rating__stars" style="--rating: {{ pct }}%" aria-hidden="true"></span>
+    <span class="rating__text">{{ rating.rating | round: 1 }}</span>
+    <span class="rating__count">({{ count }} {% if count == 1 %}review{% else %}reviews{% endif %})</span>
+    <span class="visually-hidden">Rated {{ rating.rating | round: 1 }} out of {{ rating.scale_max }}</span>
+  {%- if link != blank -%}</a>{%- else -%}</span>{%- endif -%}
+{%- endif -%}

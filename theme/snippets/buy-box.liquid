@@ -70,6 +70,7 @@
   <div class="buy__info" data-buy data-section="{{ section.id }}" {% if update_url %}data-update-url{% endif %}>
     {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
     <h2 class="buy__title">{{ product.title }}</h2>
+    <div class="buy__rating">{% render 'star-rating', product: product, link: '#reviews' %}</div>
 
     <div class="buy__price">
       <span class="buy__price-now" data-price>{{ current.price | money }}</span>

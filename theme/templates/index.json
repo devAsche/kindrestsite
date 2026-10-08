@@ -204,6 +204,12 @@
       "settings": {
         "edge_from": "#ffffff"
       }
+    },
+    "reviews": {
+      "type": "reviews",
+      "settings": {
+        "product": "kindrest-quiet-hours-cap"
+      }
     }
   },
   "order": [
@@ -212,6 +218,7 @@
     "ritual",
     "audience",
     "compare",
+    "reviews",
     "faq",
     "promise"
   ]
