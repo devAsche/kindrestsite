@@ -6,7 +6,6 @@
     "enable_upsell": true,
     "upsell_product": "kindrest-quiet-hours-neck-wrap",
     "empty_cart_url": "/products/kindrest-quiet-hours-cap",
-    "upsell_image": "shopify://shop_images/kindrest-upsell-neckwrap.webp",
     "content_for_index": [],
     "blocks": {
       "14060646107696862457": {

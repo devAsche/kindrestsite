@@ -106,3 +106,16 @@ a.rating:hover .rating__count { text-decoration: underline; text-underline-offse
 .buy__price:has(+ .buy__price-ref:not([hidden])) { margin-bottom: 6px; }
 .buy__price-ref { font-size: 14px; color: var(--ink-soft); margin: 0 0 18px; }
 .buy__price-ref[hidden] { display: none; }
+
+/* ---------- Buy box: keep columns within the screen ----------
+   A grid "1fr" track has an automatic minimum of its items' min-content width, and the
+   horizontal thumbnail strip's min-content is the full row of thumbnails. minmax(0, …) lets
+   the tracks shrink to the available width so the strip scrolls inside its own area. */
+.buy__grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+.gallery, .buy__info { min-width: 0; }
+@media (max-width: 860px) {
+  .buy__grid { grid-template-columns: minmax(0, 1fr); }
+  /* base.css re-declares .gallery { top: … } for the desktop sticky gallery after its mobile
+     reset; on mobile the gallery is position: relative, so that offset pushed it over the title. */
+  .gallery { top: 0; }
+}
