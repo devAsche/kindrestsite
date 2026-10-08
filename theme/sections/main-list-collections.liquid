@@ -1,0 +1,13 @@
+<section class="section section--tight surface-mist">
+  <div class="page-width">
+    <div class="grid">
+      {%- for collection in collections -%}
+        <a class="pcard reveal" href="{{ collection.url }}">
+          <div class="pcard__img">{%- if collection.featured_image -%}{{ collection.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', alt: collection.title }}{%- endif -%}</div>
+          <h3 class="pcard__title">{{ collection.title }}</h3>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}{ "name": "Collections list" }{% endschema %}

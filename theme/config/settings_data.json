@@ -1,0 +1,10 @@
+{
+  "current": {
+    "enable_intro": true,
+    "enable_star_trail": true,
+    "enable_quiet_toggle": true,
+    "enable_upsell": true,
+    "upsell_product": "kindrest-quiet-hours-neck-wrap",
+    "empty_cart_url": "/products/kindrest-quiet-hours-cap"
+  }
+}

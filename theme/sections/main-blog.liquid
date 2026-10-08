@@ -1,0 +1,17 @@
+<section class="section section--tight surface-mist">
+  <div class="page-width">
+    {%- paginate blog.articles by 12 -%}
+      <div class="grid">
+        {%- for article in blog.articles -%}
+          <a class="pcard reveal" href="{{ article.url }}">
+            <div class="pcard__img">{%- if article.image -%}{{ article.image | image_url: width: 700 | image_tag: loading: 'lazy', alt: article.title, style: 'object-fit:cover;mix-blend-mode:normal' }}{%- endif -%}</div>
+            <h3 class="pcard__title">{{ article.title }}</h3>
+            <div class="pcard__price">{{ article.published_at | date: '%B %d, %Y' }}</div>
+          </a>
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 -%}<div class="center" style="margin-top:32px">{{ paginate | default_pagination }}</div>{%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+{% schema %}{ "name": "Blog posts" }{% endschema %}

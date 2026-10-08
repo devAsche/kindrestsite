@@ -1,0 +1,60 @@
+<div class="header-wrap">
+  <header class="header">
+    <div class="page-width header__inner">
+      <a class="logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }} home">
+        {%- if section.settings.logo != blank -%}
+          {{ section.settings.logo | image_url: width: 300 | image_tag: alt: shop.name }}
+        {%- else -%}
+          {% render 'icon', name: 'star-mark' %}<span>{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+
+      <nav class="header__nav" aria-label="Main">
+        {%- for block in section.blocks -%}
+          <a href="{{ block.settings.link }}" {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
+        {%- endfor -%}
+      </nav>
+
+      <div class="header__actions">
+        {%- if settings.enable_quiet_toggle -%}
+          <button type="button" class="quiet-toggle" data-quiet-toggle aria-pressed="false" title="Dim the page for Quiet Hours">
+            <span class="quiet-toggle__knob" aria-hidden="true"></span>
+            <span class="quiet-toggle__label">Quiet Hours</span>
+            <span class="visually-hidden">Toggle dim mode</span>
+          </button>
+        {%- endif -%}
+        <a href="{{ routes.cart_url }}" class="icon-btn cart-icon" data-cart-open aria-label="Cart">
+          {% render 'icon', name: 'cart' %}
+          <span class="cart-count" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+        </a>
+        <button type="button" class="icon-btn menu-toggle" data-menu-toggle aria-controls="MobileNav" aria-expanded="false" aria-label="Menu">
+          {% render 'icon', name: 'menu' %}
+        </button>
+      </div>
+    </div>
+  </header>
+  <nav class="mobile-nav" id="MobileNav" aria-label="Mobile">
+    {%- for block in section.blocks -%}
+      <a href="{{ block.settings.link }}">{{ block.settings.label }}</a>
+    {%- endfor -%}
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Leave empty to show the store name with a star mark." }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Link",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Shop" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ]
+}
+{% endschema %}

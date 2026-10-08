@@ -1,0 +1,77 @@
+<div class="drawer" id="CartDrawer" aria-hidden="true">
+  <div class="drawer__overlay" data-cart-close></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle">
+    <div class="drawer__head">
+      <canvas class="starfield" data-starfield data-density="0.0012"></canvas>
+      <h2 id="CartDrawerTitle">Your cart</h2>
+      <button type="button" class="icon-btn" data-cart-close aria-label="Close cart">{% render 'icon', name: 'close' %}</button>
+    </div>
+
+    <div class="drawer__body">
+      <div class="drawer__empty" data-cart-empty {% if cart.item_count > 0 %}hidden{% endif %}>
+        <p>Your cart is resting.</p>
+        <a class="btn" href="{{ settings.empty_cart_url | default: routes.all_products_collection_url }}" data-cart-close>Find your Quiet Hours</a>
+      </div>
+
+      <div data-cart-items>
+        {%- for item in cart.items -%}
+          <div class="cart-line">
+            <div class="cart-line__img">{% if item.image %}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}{% endif %}</div>
+            <div>
+              <a class="cart-line__title" href="{{ item.url }}">{{ item.product.title }}</a>
+              {%- unless item.product.has_only_default_variant -%}<div class="cart-line__variant">{{ item.variant.title }}</div>{%- endunless -%}
+              <div class="qty">
+                <button type="button" data-line="{{ forloop.index }}" data-line-qty="{{ item.quantity | minus: 1 }}" aria-label="Decrease quantity">−</button>
+                <input type="number" value="{{ item.quantity }}" readonly aria-label="Quantity">
+                <button type="button" data-line="{{ forloop.index }}" data-line-qty="{{ item.quantity | plus: 1 }}" aria-label="Increase quantity">+</button>
+              </div>
+              <button type="button" class="cart-line__remove" data-line="{{ forloop.index }}" data-line-qty="0">Remove</button>
+            </div>
+            <div class="cart-line__price">{{ item.final_line_price | money }}</div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- assign up = settings.upsell_product -%}
+      {%- if settings.enable_upsell and up != blank and up.available -%}
+        {%- liquid
+          assign in_cart = false
+          for item in cart.items
+            if item.product_id == up.id
+              assign in_cart = true
+            endif
+          endfor
+        -%}
+        <div class="upsell" data-upsell data-product-id="{{ up.id }}" data-variant="{{ up.selected_or_first_available_variant.id }}" {% if in_cart or cart.item_count == 0 %}hidden{% endif %}>
+          <div class="upsell__label">{{ settings.upsell_label }}</div>
+          <div class="upsell__row">
+            <div class="upsell__img">{% if up.featured_media %}{{ up.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}{% endif %}</div>
+            <div>
+              <div class="upsell__title">{{ up.title }} · {{ up.price | money }}</div>
+              {%- if settings.upsell_text != blank -%}<p class="upsell__text">{{ settings.upsell_text }}</p>{%- endif -%}
+            </div>
+          </div>
+          <div class="upsell__actions">
+            {%- if up.has_only_default_variant == false and up.variants.size > 1 -%}
+              <label class="visually-hidden" for="UpsellVariant">Option</label>
+              <select id="UpsellVariant" data-upsell-variant>
+                {%- for v in up.variants -%}
+                  {%- if v.available -%}<option value="{{ v.id }}">{{ v.title }}</option>{%- endif -%}
+                {%- endfor -%}
+              </select>
+            {%- endif -%}
+            <button type="button" class="btn" data-upsell-add>Add</button>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="drawer__foot" data-cart-foot {% if cart.item_count == 0 %}hidden{% endif %}>
+      <div class="drawer__subtotal"><span>Subtotal</span><span data-cart-subtotal>{{ cart.total_price | money }}</span></div>
+      <p class="drawer__note">{{ settings.cart_note_text }}</p>
+      <form action="{{ routes.cart_url }}" method="post">
+        <button type="submit" name="checkout" class="btn btn--block">Checkout</button>
+      </form>
+    </div>
+  </div>
+</div>

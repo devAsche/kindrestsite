@@ -1,0 +1,47 @@
+<footer class="footer surface-night">
+  <canvas class="starfield" data-starfield data-density="0.00012"></canvas>
+  <div class="page-width">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="logo" href="{{ routes.root_url }}">{% render 'icon', name: 'star-mark' %}<span>{{ shop.name }}</span></a>
+        {%- if section.settings.tagline != blank -%}<p>{{ section.settings.tagline }}</p>{%- endif -%}
+        {%- if section.settings.email != blank -%}<p><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></p>{%- endif -%}
+      </div>
+      <div>
+        <h3>Shop</h3>
+        <ul>
+          {%- if section.settings.menu != blank -%}
+            {%- for link in section.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+          {%- else -%}
+            <li><a href="{{ routes.all_products_collection_url }}">All products</a></li>
+            <li><a href="{{ routes.root_url }}#faq">FAQ</a></li>
+          {%- endif -%}
+        </ul>
+      </div>
+      <div>
+        <h3>Help</h3>
+        <ul>
+          {%- for policy in shop.policies -%}
+            {%- if policy != blank -%}<li><a href="{{ policy.url }}">{{ policy.title }}</a></li>{%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+    <div class="footer__disclaimer">
+      <span>{{ section.settings.disclaimer }}</span>
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Soft things for your quiet hours." },
+    { "type": "text", "id": "email", "label": "Contact email", "default": "contact@kindreststore.com" },
+    { "type": "link_list", "id": "menu", "label": "Shop menu", "info": "Optional. Leave empty for default links." },
+    { "type": "text", "id": "disclaimer", "label": "Disclaimer", "default": "Kindrest products are made for rest and comfort and are not medical devices. If you have a health concern, please talk to your doctor." }
+  ]
+}
+{% endschema %}

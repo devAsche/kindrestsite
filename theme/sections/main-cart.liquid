@@ -1,0 +1,32 @@
+<section class="section section--tight surface-mist">
+  <div class="page-width" style="max-width:820px">
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" id="CartPageForm">
+        {%- for item in cart.items -%}
+          <div class="cart-line">
+            <div class="cart-line__img">{% if item.image %}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}{% endif %}</div>
+            <div>
+              <a class="cart-line__title" href="{{ item.url }}">{{ item.product.title }}</a>
+              {%- unless item.product.has_only_default_variant -%}<div class="cart-line__variant">{{ item.variant.title }}</div>{%- endunless -%}
+              <div class="field" style="max-width:110px;margin:8px 0 0">
+                <label for="Qty-{{ forloop.index }}" class="visually-hidden">Quantity</label>
+                <input id="Qty-{{ forloop.index }}" type="number" name="updates[]" value="{{ item.quantity }}" min="0">
+              </div>
+              <a class="cart-line__remove" style="margin:0" href="{{ item.url_to_remove }}">Remove</a>
+            </div>
+            <div class="cart-line__price">{{ item.final_line_price | money }}</div>
+          </div>
+        {%- endfor -%}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin:24px 0 8px;font-weight:800;font-size:20px"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
+        <p class="form-note">{{ settings.cart_note_text }}</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
+          <button type="submit" name="update" class="btn btn--ghost">Update cart</button>
+          <button type="submit" name="checkout" class="btn" style="flex:1">Checkout</button>
+        </div>
+      </form>
+    {%- else -%}
+      <div class="center"><p class="section-lead">Your cart is resting.</p><a class="btn" href="{{ routes.root_url }}">Continue shopping</a></div>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}{ "name": "Cart" }{% endschema %}

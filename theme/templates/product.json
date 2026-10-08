@@ -1,0 +1,165 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {}
+    },
+    "ritual": {
+      "type": "ritual",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Chill",
+            "text": "Keep it in the freezer so it's ready whenever you are."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Pull on",
+            "text": "Stretch it over your head and down over your eyes. No straps, no Velcro."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Rest",
+            "text": "Dim the lights, turn the phone face down, and take a quiet break."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "edge_from": "#ffffff",
+        "edge_to": "#ffffff"
+      }
+    },
+    "compare": {
+      "type": "compare",
+      "blocks": {
+        "r1": {
+          "type": "row",
+          "settings": {
+            "feature": "Stays on without holding it",
+            "us": true,
+            "them": false
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "feature": "Covers your eyes to block out light",
+            "us": true,
+            "them": false
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "feature": "Soft and stretchy, no hard edges",
+            "us": true,
+            "them": false
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "feature": "Wraps around the whole head",
+            "us": true,
+            "them": false
+          }
+        },
+        "r5": {
+          "type": "row",
+          "settings": {
+            "feature": "Reusable — back in the freezer after use",
+            "us": true,
+            "them": true
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ],
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "item",
+          "settings": {
+            "question": "How do I use it?",
+            "answer": "<p>Keep it in the freezer. When you want a quiet break, pull it over your head and down over your eyes, then rest.</p>"
+          }
+        },
+        "q2": {
+          "type": "item",
+          "settings": {
+            "question": "Will it fit me?",
+            "answer": "<p>It's a one-size stretch fit designed to cover the head and eyes of most adults.</p>"
+          }
+        },
+        "q3": {
+          "type": "item",
+          "settings": {
+            "question": "What's in the 2-Pack?",
+            "answer": "<p>Two caps in the color you choose — one to wear while the other chills, or one for each of you.</p>"
+          }
+        },
+        "q4": {
+          "type": "item",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>Orders are delivered to US addresses in about 5–11 days.</p>"
+          }
+        },
+        "q5": {
+          "type": "item",
+          "settings": {
+            "question": "What if something's wrong with my order?",
+            "answer": "<p>If it arrives damaged, defective, or isn't what you ordered, email a photo to contact@kindreststore.com within 30 days of delivery and we'll make it right. No need to send anything back.</p>"
+          }
+        },
+        "q6": {
+          "type": "item",
+          "settings": {
+            "question": "Is this a medical device?",
+            "answer": "<p>No. Kindrest caps are made for rest and comfort and are not medical devices. If you have a health concern, please talk to your doctor.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6"
+      ],
+      "settings": {}
+    },
+    "promise": {
+      "type": "promise",
+      "settings": {
+        "edge_from": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "ritual",
+    "compare",
+    "faq",
+    "promise"
+  ]
+}

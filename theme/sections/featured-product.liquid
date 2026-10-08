@@ -1,0 +1,39 @@
+{%- assign p = section.settings.product -%}
+<section class="section buy surface-moon" id="buy" data-buy-section>
+  <div class="page-width">
+    {%- if p != blank -%}
+      {% render 'buy-box', product: p, section: section, update_url: false %}
+    {%- else -%}
+      <div class="buy__placeholder">
+        <p><strong>Choose a product</strong> for this section in the theme editor.</p>
+        <p>Products in “Draft” status don’t show on the storefront until they are set to Active.</p>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Buy box",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Your Quiet Hours kit" },
+    { "type": "checkbox", "id": "show_description", "label": "Show product description", "default": true },
+    { "type": "header", "content": "Pack options" },
+    { "type": "text", "id": "default_pack", "label": "Highlighted pack value", "default": "2-Pack", "info": "Must match the option value exactly. Selected by default." },
+    { "type": "text", "id": "pack_badge", "label": "Badge on highlighted pack", "default": "Best value" },
+    { "type": "text", "id": "pack_note_1", "label": "Note under 1st pack", "default": "Just for you" },
+    { "type": "text", "id": "pack_note_2", "label": "Note under 2nd pack", "default": "One to wear, one chilling — or one each" },
+    { "type": "text", "id": "pack_note_3", "label": "Note under 3rd pack" },
+    { "type": "text", "id": "atc_label", "label": "Button label", "default": "Add to cart" },
+    { "type": "header", "content": "Reassurance" },
+    { "type": "text", "id": "assure_1_title", "label": "Point 1 title", "default": "Ships to the US" },
+    { "type": "text", "id": "assure_1_text", "label": "Point 1 text", "default": "Arrives in 5–11 days" },
+    { "type": "text", "id": "assure_2_title", "label": "Point 2 title", "default": "30-day promise" },
+    { "type": "text", "id": "assure_2_text", "label": "Point 2 text", "default": "Damaged? We'll fix it" },
+    { "type": "text", "id": "assure_3_title", "label": "Point 3 title", "default": "Secure checkout" },
+    { "type": "text", "id": "assure_3_text", "label": "Point 3 text", "default": "Cards & wallets" }
+  ],
+  "presets": [{ "name": "Buy box" }]
+}
+{% endschema %}

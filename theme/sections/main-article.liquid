@@ -1,0 +1,10 @@
+<section class="section section--tight surface-mist">
+  <div class="page-width">
+    <article class="rte">
+      <p class="form-note">{{ article.published_at | date: '%B %d, %Y' }}</p>
+      {%- if article.image -%}{{ article.image | image_url: width: 1400 | image_tag: alt: article.title }}{%- endif -%}
+      {{ article.content }}
+    </article>
+  </div>
+</section>
+{% schema %}{ "name": "Article" }{% endschema %}

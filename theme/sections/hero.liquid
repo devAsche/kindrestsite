@@ -1,0 +1,128 @@
+{%- assign p = section.settings.product -%}
+{%- assign has_image = false -%}
+{%- if section.settings.image != blank -%}{%- assign has_image = true -%}{%- endif -%}
+<section class="hero surface-night edge-mist-bottom{% if has_image %} hero--image{% endif %}" id="hero-{{ section.id }}">
+  {%- if has_image -%}
+    <div class="hero__media">
+      <div class="hero__media-desktop" style="position:absolute;inset:0">
+        {{ section.settings.image | image_url: width: 2400 | image_tag: widths: '960, 1440, 1920, 2400', sizes: '100vw', fetchpriority: 'high', alt: section.settings.image.alt | default: '' }}
+      </div>
+      <div class="hero__media-mobile" style="position:absolute;inset:0">
+        {%- assign mimg = section.settings.image_mobile | default: section.settings.image -%}
+        {{ mimg | image_url: width: 1200 | image_tag: widths: '600, 900, 1200', sizes: '100vw', loading: 'eager', alt: mimg.alt | default: '' }}
+      </div>
+    </div>
+  {%- else -%}
+    <canvas class="starfield" data-starfield data-parallax data-density="0.00022"></canvas>
+  {%- endif -%}
+
+  <div class="page-width hero__grid">
+    <div class="hero__copy">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h1 class="hero__title">{{ section.settings.title }}</h1>
+      {%- if section.settings.text != blank -%}<p class="hero__sub">{{ section.settings.text }}</p>{%- endif -%}
+      <div class="hero__ctas">
+        {%- if section.settings.cta_label != blank -%}
+          <a class="btn btn--moon" href="{{ section.settings.cta_link | default: '#buy' }}">{{ section.settings.cta_label }}</a>
+        {%- endif -%}
+        {%- if section.settings.cta2_label != blank -%}
+          <a class="link-arrow" href="{{ section.settings.cta2_link | default: '#ritual' }}">{{ section.settings.cta2_label }} <span aria-hidden="true">→</span></a>
+        {%- endif -%}
+      </div>
+      {%- assign ticks = section.settings.ticks | split: '|' -%}
+      {%- if section.settings.ticks != blank -%}
+        <ul class="hero__ticks">{%- for t in ticks -%}<li>{{ t | strip }}</li>{%- endfor -%}</ul>
+      {%- endif -%}
+    </div>
+    <div class="hero__visual">
+      <div class="hero__orbit" aria-hidden="true"></div>
+      {%- if section.settings.badge != blank -%}
+        <div class="hero__badge" aria-hidden="true">
+          <svg viewBox="0 0 120 120"><defs><path id="BadgePath-{{ section.id }}" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0"/></defs>
+            <text><textPath href="#BadgePath-{{ section.id }}">{{ section.settings.badge | upcase }} ✦ {{ section.settings.badge | upcase }} ✦</textPath></text>
+          </svg>
+          <span class="hero__badge-center">{{ section.settings.badge_center }}</span>
+        </div>
+      {%- endif -%}
+      <div class="hero__moon" aria-hidden="true">
+        {%- if section.settings.visual != blank -%}
+          {{ section.settings.visual | image_url: width: 900 | image_tag: widths: '450, 700, 900', sizes: '(min-width: 861px) 40vw, 300px', alt: '' }}
+        {%- elsif p != blank and p.featured_media -%}
+          {{ p.featured_media | image_url: width: 900 | image_tag: widths: '450, 700, 900', sizes: '(min-width: 861px) 40vw, 300px', alt: '' }}
+        {%- endif -%}
+      </div>
+      {%- if section.settings.show_swatches and section.settings.visual == blank and p != blank -%}
+        {%- liquid
+          assign color_index = nil
+          for option in p.options_with_values
+            assign oname = option.name | downcase
+            if oname contains 'color' or oname contains 'colour'
+              assign color_index = forloop.index0
+              assign color_option = option
+            endif
+          endfor
+        -%}
+        {%- if color_index != nil -%}
+          <div class="hero__swatches" role="group" aria-label="Choose a color">
+            {%- for value in color_option.values -%}
+              {%- liquid
+                assign vimg = nil
+                for v in p.variants
+                  if v.options[color_index] == value and v.featured_media
+                    assign vimg = v.featured_media
+                    break
+                  endif
+                endfor
+                assign key = value | downcase
+                case key
+                  when 'black'
+                    assign sw = '#22252e'
+                  when 'blue'
+                    assign sw = '#8fb3e0'
+                  when 'pink'
+                    assign sw = '#f2b9c9'
+                  else
+                    assign sw = key
+                endcase
+              -%}
+              <button type="button" class="hero__swatch" style="--swatch: {{ sw }}" data-hero-swatch
+                data-color="{{ value | escape }}" data-option-index="{{ color_index }}"
+                {% if vimg %}data-src="{{ vimg | image_url: width: 900 }}"{% endif %}
+                aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
+                <span class="visually-hidden">{{ value }}</span>
+              </button>
+            {%- endfor -%}
+            <p class="hero__swatch-name" data-hero-swatch-name>{{ color_option.values.first }}</p>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "header", "content": "Background" },
+    { "type": "image_picker", "id": "image", "label": "Full-width hero image (desktop)", "info": "Optional. Wide image, subject on the right, 1536×1024 or larger. When empty, an animated night sky is shown." },
+    { "type": "image_picker", "id": "image_mobile", "label": "Hero image (mobile)", "info": "Tall image, 1024×1536." },
+    { "type": "header", "content": "Moon visual (no hero image)" },
+    { "type": "product", "id": "product", "label": "Product shown in the moon" },
+    { "type": "image_picker", "id": "visual", "label": "Custom moon image", "info": "Overrides the product image. Works best on a white background." },
+    { "type": "checkbox", "id": "show_swatches", "label": "Show color swatches under the moon", "default": true, "info": "Switches the image and selects the same color in the buy box." },
+    { "type": "text", "id": "badge", "label": "Rotating badge text", "default": "One to wear · one to chill" },
+    { "type": "text", "id": "badge_center", "label": "Badge center text", "default": "2-Pack" },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Quiet Hours by Kindrest" },
+    { "type": "inline_richtext", "id": "title", "label": "Heading", "default": "Log off. Cool down. <em>Lights out.</em>" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "A soft gel cap that covers your head and eyes. Keep it in the freezer, and pull it on at the end of a long screen day." },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop the 2-Pack" },
+    { "type": "url", "id": "cta_link", "label": "Button link", "info": "Leave empty to scroll to the buy box." },
+    { "type": "text", "id": "cta2_label", "label": "Secondary link label", "default": "How it works" },
+    { "type": "url", "id": "cta2_link", "label": "Secondary link" },
+    { "type": "text", "id": "ticks", "label": "Small points (separate with |)", "default": "Soft stretch fit | No Velcro | Covers the eyes" }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

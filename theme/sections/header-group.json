@@ -1,0 +1,19 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": { "type": "announcement", "settings": { "text": "The 2-Pack is here — one to wear, one in the freezer", "link": "" } },
+    "header": {
+      "type": "header",
+      "blocks": {
+        "l1": { "type": "link", "settings": { "label": "Shop", "link": "/products/kindrest-quiet-hours-cap" } },
+        "l2": { "type": "link", "settings": { "label": "How it works", "link": "/#ritual" } },
+        "l3": { "type": "link", "settings": { "label": "FAQ", "link": "/#faq" } },
+        "l4": { "type": "link", "settings": { "label": "Contact", "link": "/pages/contact" } }
+      },
+      "block_order": ["l1", "l2", "l3", "l4"],
+      "settings": {}
+    }
+  },
+  "order": ["announcement", "header"]
+}

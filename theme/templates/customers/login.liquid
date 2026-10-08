@@ -1,0 +1,19 @@
+<section class="page-hero surface-night edge-mist-bottom"><canvas class="starfield" data-starfield data-density="0.0003"></canvas><div class="page-width"><h1>Log in</h1></div></section>
+<section class="section section--tight surface-mist"><div class="page-width">
+<div class="form-card">
+  {%- form 'customer_login' -%}
+    {%- if form.errors -%}<div class="form-errors">{{ form.errors | default_errors }}</div>{%- endif -%}
+    <div class="field"><label for="LoginEmail">Email</label><input id="LoginEmail" type="email" name="customer[email]" autocomplete="email" required></div>
+    <div class="field"><label for="LoginPassword">Password</label><input id="LoginPassword" type="password" name="customer[password]" autocomplete="current-password" required></div>
+    <button type="submit" class="btn btn--block">Log in</button>
+  {%- endform -%}
+  <p class="form-note" style="margin-top:16px"><a href="{{ routes.account_register_url }}">Create account</a></p>
+  {%- form 'recover_customer_password' -%}
+    <details><summary class="form-note">Forgot your password?</summary>
+      {%- if form.posted_successfully? -%}<p class="form-success">We've sent you an email with a link to reset your password.</p>{%- endif -%}
+      <div class="field"><label for="RecoverEmail">Email</label><input id="RecoverEmail" type="email" name="email" autocomplete="email" required></div>
+      <button type="submit" class="btn btn--ghost btn--block">Send reset link</button>
+    </details>
+  {%- endform -%}
+</div>
+</div></section>

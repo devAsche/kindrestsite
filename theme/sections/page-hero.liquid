@@ -1,0 +1,45 @@
+{%- liquid
+  assign title = section.settings.title
+  if title == blank
+    case request.page_type
+      when 'page'
+        assign title = page.title
+      when 'collection'
+        assign title = collection.title
+      when 'blog'
+        assign title = blog.title
+      when 'article'
+        assign title = article.title
+      when 'search'
+        assign title = 'Search'
+      when 'cart'
+        assign title = 'Your cart'
+      when 'list-collections'
+        assign title = 'Collections'
+      when '404'
+        assign title = 'Lost among the stars'
+      when 'policy'
+        assign title = shop.name
+      else
+        assign title = page_title
+    endcase
+  endif
+-%}
+<section class="page-hero surface-night edge-mist-bottom">
+  <canvas class="starfield" data-starfield data-density="0.0003"></canvas>
+  <div class="page-width">
+    <h1>{{ title }}</h1>
+    {%- if section.settings.text != blank -%}<p>{{ section.settings.text }}</p>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page title",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "info": "Leave empty to use the page title." },
+    { "type": "text", "id": "text", "label": "Text" }
+  ],
+  "presets": [{ "name": "Page title" }]
+}
+{% endschema %}

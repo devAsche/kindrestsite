@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "title": {
+      "type": "page-hero",
+      "settings": {}
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {}
+    }
+  },
+  "order": [
+    "title",
+    "main"
+  ]
+}

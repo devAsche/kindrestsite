@@ -1,0 +1,12 @@
+<section class="page-hero surface-night edge-mist-bottom"><canvas class="starfield" data-starfield data-density="0.0003"></canvas><div class="page-width"><h1>Activate account</h1></div></section>
+<section class="section section--tight surface-mist"><div class="page-width">
+<div class="form-card">
+  {%- form 'activate_customer_password' -%}
+    {%- if form.errors -%}<div class="form-errors">{{ form.errors | default_errors }}</div>{%- endif -%}
+    <div class="field"><label for="ActPw">Password</label><input id="ActPw" type="password" name="customer[password]" autocomplete="new-password" required></div>
+    <div class="field"><label for="ActPw2">Confirm password</label><input id="ActPw2" type="password" name="customer[password_confirmation]" autocomplete="new-password" required></div>
+    <button type="submit" class="btn btn--block">Activate account</button>
+    <button type="submit" name="decline" class="btn btn--ghost btn--block" style="margin-top:10px">Decline</button>
+  {%- endform -%}
+</div>
+</div></section>

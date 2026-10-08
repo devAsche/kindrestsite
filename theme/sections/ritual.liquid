@@ -1,0 +1,50 @@
+<section class="section ritual surface-night edge-mist-top edge-mist-bottom" id="ritual" data-reveal-section style="--edge-from: {{ section.settings.edge_from }}; --edge-to: {{ section.settings.edge_to }};">
+  <canvas class="starfield" data-starfield data-density="0.00016"></canvas>
+  <div class="page-width center">
+    {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+    <h2 class="section-title">{{ section.settings.title }}</h2>
+    {%- if section.settings.text != blank -%}<p class="section-lead">{{ section.settings.text }}</p>{%- endif -%}
+
+    <div class="ritual__steps">
+      <svg class="ritual__lines" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M166 60 C 300 10, 380 110, 500 60 S 720 10, 834 60"/>
+      </svg>
+      {%- for block in section.blocks -%}
+        <div class="step" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <div class="step__img">{{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 600', sizes: '280px' }}</div>
+          {%- endif -%}
+          <div class="step__star"><span>{{ forloop.index }}</span></div>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ritual (3 steps)",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "How it works" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "Your Quiet Hours ritual" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Three small steps between a bright screen and a quiet break." },
+    { "type": "color", "id": "edge_from", "label": "Color of the section above", "default": "#ffffff" },
+    { "type": "color", "id": "edge_to", "label": "Color of the section below", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image (desktop only, optional)" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Chill" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Keep it in the freezer so it's ready when you are." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Ritual (3 steps)", "blocks": [{ "type": "step" }, { "type": "step" }, { "type": "step" }] }]
+}
+{% endschema %}

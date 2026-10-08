@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "title": {
+      "type": "page-hero",
+      "settings": {
+        "text": "We usually reply within 1\u20132 business days."
+      }
+    },
+    "main": {
+      "type": "main-contact",
+      "settings": {}
+    }
+  },
+  "order": [
+    "title",
+    "main"
+  ]
+}

@@ -1,0 +1,214 @@
+{%- comment -%}
+  Product gallery + purchase form, shared by the home buy box and the product page.
+  Params: product, section, update_url (bool)
+{%- endcomment -%}
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign default_pack = section.settings.default_pack | strip | downcase
+  assign pack_index = nil
+  for option in product.options_with_values
+    assign oname = option.name | downcase
+    if oname contains 'pack' or oname contains 'bundle' or oname contains 'set'
+      assign pack_index = forloop.index0
+    endif
+  endfor
+
+  comment
+    Preselect the highlighted pack (e.g. 2-Pack) when no variant is in the URL.
+  endcomment
+  if product.selected_variant == blank and pack_index != nil and default_pack != blank
+    for v in product.variants
+      assign val = v.options[pack_index] | downcase
+      if val == default_pack and v.available
+        assign match = true
+        for o in v.options
+          if forloop.index0 != pack_index and o != current.options[forloop.index0]
+            assign match = false
+          endif
+        endfor
+        if match
+          assign current = v
+          break
+        endif
+      endif
+    endfor
+  endif
+-%}
+
+<div class="buy__grid">
+  <div class="gallery" data-gallery>
+    <div class="gallery__main" data-gallery-main>
+      {%- assign main_media = current.featured_media | default: product.featured_media -%}
+      {%- if main_media -%}
+        {{ main_media | image_url: width: 1200 | image_tag: widths: '480, 720, 960, 1200', sizes: '(min-width: 861px) 55vw, 100vw', alt: product.title, fetchpriority: 'high' }}
+      {%- endif -%}
+      {%- if product.media.size > 1 -%}
+        <button type="button" class="gallery__nav gallery__nav--prev" data-gallery-prev aria-label="Previous image">{% render 'icon', name: 'chevron-left' %}</button>
+        <button type="button" class="gallery__nav gallery__nav--next" data-gallery-next aria-label="Next image">{% render 'icon', name: 'chevron-right' %}</button>
+      {%- endif -%}
+    </div>
+    {%- if product.media.size > 1 -%}
+      <div class="gallery__thumbs">
+        {%- for media in product.media -%}
+          {%- if media.media_type == 'image' or media.preview_image -%}
+            {%- assign img = media.preview_image | default: media -%}
+            <button type="button" class="gallery__thumb" data-thumb
+              data-media-id="{{ media.id }}"
+              data-src="{{ img | image_url: width: 1200 }}"
+              data-srcset="{{ img | image_url: width: 480 }} 480w, {{ img | image_url: width: 720 }} 720w, {{ img | image_url: width: 960 }} 960w, {{ img | image_url: width: 1200 }} 1200w"
+              data-alt="{{ product.title | escape }}"
+              aria-current="{% if media.id == main_media.id %}true{% else %}false{% endif %}"
+              aria-label="Show image {{ forloop.index }}">
+              {{ img | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="buy__info" data-buy data-section="{{ section.id }}" {% if update_url %}data-update-url{% endif %}>
+    {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+    <h2 class="buy__title">{{ product.title }}</h2>
+
+    <div class="buy__price">
+      <span class="buy__price-now" data-price>{{ current.price | money }}</span>
+      <s class="buy__price-was" data-compare {% unless current.compare_at_price > current.price %}hidden{% endunless %}>{{ current.compare_at_price | money }}</s>
+      <span class="buy__save" data-save hidden></span>
+    </div>
+
+    {%- if section.settings.show_description -%}
+      <div class="buy__desc">{{ product.description }}</div>
+    {%- endif -%}
+
+    {%- assign form_id = 'BuyForm-' | append: section.id -%}
+    {%- form 'product', product, id: form_id, novalidate: 'novalidate' -%}
+      <input type="hidden" name="id" value="{{ current.id }}">
+
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          {%- assign oi = forloop.index0 -%}
+          {%- assign oname = option.name | downcase -%}
+          <fieldset class="option">
+            <legend class="option__label">{{ option.name }}: <span data-option-value="{{ oi }}">{{ current.options[oi] }}</span></legend>
+
+            {%- if oi == pack_index -%}
+              <div class="packs">
+                {%- for value in option.values -%}
+                  {%- assign vid = section.id | append: '-' | append: oi | append: '-' | append: forloop.index0 -%}
+                  {%- assign vdown = value | downcase -%}
+                  <div class="pack" data-option-item>
+                    {%- if vdown == default_pack and section.settings.pack_badge != blank -%}
+                      <span class="pack__badge">{{ section.settings.pack_badge }}</span>
+                    {%- endif -%}
+                    <input type="radio" id="Opt-{{ vid }}" name="option-{{ oi }}" value="{{ value | escape }}" {% if current.options[oi] == value %}checked{% endif %}>
+                    <label for="Opt-{{ vid }}">
+                      <span class="pack__radio"></span>
+                      <span>
+                        <span class="pack__name">{{ value }}</span>
+                        {%- liquid
+                          case forloop.index
+                            when 1
+                              assign note = section.settings.pack_note_1
+                            when 2
+                              assign note = section.settings.pack_note_2
+                            else
+                              assign note = section.settings.pack_note_3
+                          endcase
+                        -%}
+                        {%- if note != blank -%}<span class="pack__note">{{ note }}</span>{%- endif -%}
+                      </span>
+                      <span class="pack__price" data-pack-price="{{ value | escape }}" data-option-index="{{ oi }}"></span>
+                    </label>
+                  </div>
+                {%- endfor -%}
+              </div>
+
+            {%- elsif oname contains 'color' or oname contains 'colour' -%}
+              <div class="swatches">
+                {%- for value in option.values -%}
+                  {%- assign vid = section.id | append: '-' | append: oi | append: '-' | append: forloop.index0 -%}
+                  {%- liquid
+                    assign key = value | downcase
+                    case key
+                      when 'black'
+                        assign sw = '#22252e'
+                      when 'blue'
+                        assign sw = '#8fb3e0'
+                      when 'pink'
+                        assign sw = '#f2b9c9'
+                      when 'purple'
+                        assign sw = '#b9a7dd'
+                      when 'grey', 'gray'
+                        assign sw = '#b9bcc7'
+                      when 'white'
+                        assign sw = '#ffffff'
+                      else
+                        assign sw = key
+                    endcase
+                  -%}
+                  <div class="swatch" data-option-item>
+                    <input type="radio" id="Opt-{{ vid }}" name="option-{{ oi }}" value="{{ value | escape }}" {% if current.options[oi] == value %}checked{% endif %}>
+                    <label for="Opt-{{ vid }}" style="--swatch: {{ sw }}" title="{{ value | escape }}"><span class="visually-hidden">{{ value }}</span></label>
+                  </div>
+                {%- endfor -%}
+              </div>
+
+            {%- else -%}
+              <div class="chips">
+                {%- for value in option.values -%}
+                  {%- assign vid = section.id | append: '-' | append: oi | append: '-' | append: forloop.index0 -%}
+                  <div class="chip" data-option-item>
+                    <input type="radio" id="Opt-{{ vid }}" name="option-{{ oi }}" value="{{ value | escape }}" {% if current.options[oi] == value %}checked{% endif %}>
+                    <label for="Opt-{{ vid }}">{{ value }}</label>
+                  </div>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </fieldset>
+        {%- endfor -%}
+      {%- endunless -%}
+
+      <button type="submit" class="btn btn--block buy__atc" data-atc data-label="{{ section.settings.atc_label | escape }}" {% unless current.available %}disabled{% endunless %}>
+        <span data-atc-label>{% if current.available %}{{ section.settings.atc_label }}{% else %}Sold out{% endif %}</span>
+        <span class="btn__price" data-atc-price>· {{ current.price | money }}</span>
+      </button>
+      <p class="buy__error" data-error role="alert"></p>
+    {%- endform -%}
+
+    <div class="buy__assure">
+      {%- if section.settings.assure_1_title != blank -%}<div><strong>{{ section.settings.assure_1_title }}</strong>{{ section.settings.assure_1_text }}</div>{%- endif -%}
+      {%- if section.settings.assure_2_title != blank -%}<div><strong>{{ section.settings.assure_2_title }}</strong>{{ section.settings.assure_2_text }}</div>{%- endif -%}
+      {%- if section.settings.assure_3_title != blank -%}<div><strong>{{ section.settings.assure_3_title }}</strong>{{ section.settings.assure_3_text }}</div>{%- endif -%}
+    </div>
+
+    <script type="application/json" data-product-json>
+      {
+        "id": {{ product.id }},
+        "options": {{ product.options | json }},
+        "packIndex": {% if pack_index != nil %}{{ pack_index }}{% else %}null{% endif %},
+        "variants": [
+          {%- for v in product.variants -%}
+            {
+              "id": {{ v.id }},
+              "title": {{ v.title | json }},
+              "options": {{ v.options | json }},
+              "price": {{ v.price }},
+              "compare_at_price": {{ v.compare_at_price | default: 0 }},
+              "available": {{ v.available | json }},
+              "featured_media": {% if v.featured_media %}{ "id": {{ v.featured_media.id }} }{% else %}null{% endif %}
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      }
+    </script>
+  </div>
+</div>
+
+<div class="sticky-atc" id="StickyAtc-{{ section.id }}" aria-hidden="false">
+  <div class="sticky-atc__info">
+    <div class="sticky-atc__name">{{ product.title }}</div>
+    <div class="sticky-atc__variant" data-sticky-variant>{{ current.title }} · {{ current.price | money }}</div>
+  </div>
+  <button type="button" class="btn" data-sticky-atc {% unless current.available %}disabled{% endunless %}>Add to cart</button>
+</div>

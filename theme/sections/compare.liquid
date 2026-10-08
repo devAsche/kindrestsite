@@ -1,0 +1,46 @@
+<section class="section surface-mist" id="compare">
+  <div class="page-width">
+    <div class="center">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    </div>
+    <div class="compare reveal" role="table" aria-label="{{ section.settings.title | escape }}">
+      <div class="compare__row" role="row">
+        <span role="columnheader"><span class="visually-hidden">Feature</span></span>
+        <span class="compare__head compare__head--us" role="columnheader">{{ section.settings.us_label }}</span>
+        <span class="compare__head" role="columnheader">{{ section.settings.them_label }}</span>
+      </div>
+      {%- for block in section.blocks -%}
+        <div class="compare__row" role="row" {{ block.shopify_attributes }}>
+          <span class="compare__feat" role="cell">{{ block.settings.feature }}</span>
+          <span class="compare__cell compare__cell--us" role="cell">{% if block.settings.us %}<span class="mark-yes" aria-label="Yes">✦</span>{% else %}<span class="mark-no" aria-label="No">–</span>{% endif %}</span>
+          <span class="compare__cell" role="cell">{% if block.settings.them %}<span class="mark-yes" aria-label="Yes">✦</span>{% else %}<span class="mark-no" aria-label="No">–</span>{% endif %}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Comparison",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why a cap" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "Gel cap vs. a regular ice pack" },
+    { "type": "text", "id": "us_label", "label": "Our column", "default": "Quiet Hours Cap" },
+    { "type": "text", "id": "them_label", "label": "Other column", "default": "Ice pack" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        { "type": "text", "id": "feature", "label": "Feature", "default": "Stays on without holding it" },
+        { "type": "checkbox", "id": "us", "label": "Ours", "default": true },
+        { "type": "checkbox", "id": "them", "label": "Other", "default": false }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Comparison", "blocks": [{ "type": "row" }] }]
+}
+{% endschema %}
