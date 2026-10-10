@@ -34,21 +34,21 @@
           "type": "item",
           "settings": {
             "question": "How long does shipping take?",
-            "answer": "<p>Orders are delivered to US addresses in about 5–11 days.</p>"
+            "answer": "<p>Shipping to US addresses is free. Orders ship within 1–3 business days and usually arrive 5–11 business days after shipping. You'll get a tracking number by email.</p>"
           }
         },
         "q3": {
           "type": "item",
           "settings": {
             "question": "What if something's wrong with my order?",
-            "answer": "<p>If it arrives damaged, defective, or isn't what you ordered, email a photo to contact@kindreststore.com within 30 days of delivery and we'll make it right. No need to send anything back.</p>"
+            "answer": "<p>If it arrives damaged, defective, or isn't what you ordered, email a photo to contact@kindreststore.com within 30 days of delivery. We'll send a replacement or a full refund, and you don't need to send anything back. We can't accept returns for a change of mind, so please read the details before you order.</p>"
           }
         },
         "q4": {
           "type": "item",
           "settings": {
-            "question": "Is this a medical device?",
-            "answer": "<p>No. Kindrest products are made for rest and comfort and are not medical devices. If you have a health concern, please talk to your doctor.</p>"
+            "question": "Who is it for?",
+            "answer": "<p>Anyone who wants a cool break for the neck and shoulders after a long day at the desk, or on a warm evening. It's a comfort item made for resting, not a medical device. If you have a health concern, please talk to your doctor.</p>"
           }
         }
       },
@@ -90,10 +90,63 @@
         "title": "Notes from Quiet Hours",
         "empty_text": "Reviews from verified buyers will appear here."
       }
+    },
+    "specs": {
+      "type": "specs",
+      "blocks": {
+        "r1": {
+          "type": "row",
+          "settings": {
+            "label": "Size & weight",
+            "value": ""
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "label": "Material",
+            "value": ""
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "label": "Time in the freezer",
+            "value": ""
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "label": "Stays cool for",
+            "value": ""
+          }
+        },
+        "r5": {
+          "type": "row",
+          "settings": {
+            "label": "Care",
+            "value": ""
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ],
+      "settings": {
+        "point_1": "Rests on the back of your neck and shoulders",
+        "point_2": "Chilled gel you keep in the freezer",
+        "point_3": "Soft cover with a hook-and-loop strap"
+      }
     }
   },
   "order": [
     "main",
+    "specs",
     "band",
     "reviews",
     "faq",

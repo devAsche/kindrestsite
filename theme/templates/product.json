@@ -84,6 +84,22 @@
             "us": true,
             "them": true
           }
+        },
+        "r6": {
+          "type": "row",
+          "settings": {
+            "feature": "Can go anywhere on the body",
+            "us": false,
+            "them": true
+          }
+        },
+        "r7": {
+          "type": "row",
+          "settings": {
+            "feature": "Usually costs less",
+            "us": false,
+            "them": true
+          }
         }
       },
       "block_order": [
@@ -91,7 +107,9 @@
         "r2",
         "r3",
         "r4",
-        "r5"
+        "r5",
+        "r6",
+        "r7"
       ],
       "settings": {}
     },
@@ -123,21 +141,21 @@
           "type": "item",
           "settings": {
             "question": "How long does shipping take?",
-            "answer": "<p>Orders are delivered to US addresses in about 5–11 days.</p>"
+            "answer": "<p>Shipping to US addresses is free. Orders ship within 1–3 business days and usually arrive 5–11 business days after shipping. You'll get a tracking number by email.</p>"
           }
         },
         "q5": {
           "type": "item",
           "settings": {
             "question": "What if something's wrong with my order?",
-            "answer": "<p>If it arrives damaged, defective, or isn't what you ordered, email a photo to contact@kindreststore.com within 30 days of delivery and we'll make it right. No need to send anything back.</p>"
+            "answer": "<p>If it arrives damaged, defective, or isn't what you ordered, email a photo to contact@kindreststore.com within 30 days of delivery. We'll send a replacement or a full refund, and you don't need to send anything back. We can't accept returns for a change of mind, so please read the details before you order.</p>"
           }
         },
         "q6": {
           "type": "item",
           "settings": {
-            "question": "Is this a medical device?",
-            "answer": "<p>No. Kindrest caps are made for rest and comfort and are not medical devices. If you have a health concern, please talk to your doctor.</p>"
+            "question": "Who is it for?",
+            "answer": "<p>Anyone who wants a cool, dark, quiet break at the end of a long screen day: after work, before bed, or on a warm night. It's a comfort item made for resting, not a medical device. If you have a health concern, please talk to your doctor.</p>"
           }
         }
       },
@@ -180,10 +198,63 @@
       "settings": {
         "product": "kindrest-quiet-hours-neck-wrap"
       }
+    },
+    "specs": {
+      "type": "specs",
+      "blocks": {
+        "r1": {
+          "type": "row",
+          "settings": {
+            "label": "Size & fit",
+            "value": ""
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "label": "Material",
+            "value": ""
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "label": "Time in the freezer",
+            "value": ""
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "label": "Stays cool for",
+            "value": ""
+          }
+        },
+        "r5": {
+          "type": "row",
+          "settings": {
+            "label": "Care",
+            "value": ""
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ],
+      "settings": {
+        "point_1": "Covers your eyes to block out light",
+        "point_2": "Chilled gel you keep in the freezer",
+        "point_3": "Soft stretch fit, no straps or Velcro"
+      }
     }
   },
   "order": [
     "main",
+    "specs",
     "reviews",
     "ritual",
     "compare",

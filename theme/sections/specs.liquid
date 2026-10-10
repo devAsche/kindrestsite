@@ -1,0 +1,76 @@
+{%- comment -%}
+  "What it is" points + a spec table. A spec row only shows once its value is filled in,
+  and the table is hidden until at least one row has a value. Only use measured values.
+{%- endcomment -%}
+{%- liquid
+  assign points = ''
+  if section.settings.point_1 != blank or section.settings.point_2 != blank or section.settings.point_3 != blank
+    assign points = 'yes'
+  endif
+  assign filled = 0
+  for block in section.blocks
+    if block.settings.value != blank
+      assign filled = filled | plus: 1
+    endif
+  endfor
+-%}
+{%- if points != blank or filled > 0 or request.design_mode -%}
+<section class="section specs surface-mist" id="specs">
+  <div class="page-width">
+    <div class="center">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    </div>
+
+    {%- if points != blank -%}
+      <ul class="specs__points reveal">
+        {%- if section.settings.point_1 != blank -%}<li><span aria-hidden="true">✦</span>{{ section.settings.point_1 }}</li>{%- endif -%}
+        {%- if section.settings.point_2 != blank -%}<li><span aria-hidden="true">✦</span>{{ section.settings.point_2 }}</li>{%- endif -%}
+        {%- if section.settings.point_3 != blank -%}<li><span aria-hidden="true">✦</span>{{ section.settings.point_3 }}</li>{%- endif -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if filled > 0 -%}
+      <dl class="specs__table reveal">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.value != blank -%}
+            <div class="specs__row" {{ block.shopify_attributes }}>
+              <dt>{{ block.settings.label }}</dt>
+              <dd>{{ block.settings.value }}</dd>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </dl>
+    {%- elsif request.design_mode -%}
+      <p class="specs__empty">Spec rows stay hidden until you add a value. Use measured values only.</p>
+    {%- endif -%}
+
+    {%- if section.settings.note != blank -%}<p class="specs__note">{{ section.settings.note }}</p>{%- endif -%}
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "What it is + specs",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "What it is" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "The simple version" },
+    { "type": "text", "id": "point_1", "label": "Point 1" },
+    { "type": "text", "id": "point_2", "label": "Point 2" },
+    { "type": "text", "id": "point_3", "label": "Point 3" },
+    { "type": "text", "id": "note", "label": "Small note under the table" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Spec row",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Material" },
+        { "type": "text", "id": "value", "label": "Value", "info": "Hidden while empty. Use measured values only." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "What it is + specs" }]
+}
+{% endschema %}
