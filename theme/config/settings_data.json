@@ -1,6 +1,7 @@
 {
   "current": {
     "enable_intro": true,
+    "intro_line_2": "Let's dim the lights.",
     "enable_star_trail": true,
     "enable_quiet_toggle": true,
     "enable_upsell": true,
@@ -16,7 +17,8 @@
     },
     "enable_set_offer": true,
     "set_offer_percent": 20,
-    "set_offer_qualifying_value": "1 Cap",
+    "set_offer_qualifying_value": "",
+    "set_offer_note": "Works with any Quiet Hours Cap, 1 Cap or 2-Pack. One discounted wrap per cap. Applied automatically at checkout.",
     "set_offer_cap": "kindrest-quiet-hours-cap",
     "set_offer_addon": "kindrest-quiet-hours-neck-wrap"
   }

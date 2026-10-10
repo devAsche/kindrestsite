@@ -33,6 +33,17 @@
       endif
     endfor
   endif
+
+  comment
+    "Cap + Neck Wrap" set card (theme settings → Set offer). Shown on the cap only.
+    It adds the single cap + the wrap; the wrap discount is Shopify's automatic discount.
+  endcomment
+  assign set_on = false
+  assign set_addon = settings.set_offer_addon
+  assign set_label = 'Cap + Neck Wrap'
+  if settings.enable_set_offer and set_addon != blank and set_addon.available and settings.set_offer_cap != blank and settings.set_offer_cap.id == product.id and pack_index != nil
+    assign set_on = true
+  endif
 -%}
 
 <div class="buy__grid">
@@ -178,7 +189,34 @@
                     </label>
                   </div>
                 {%- endfor -%}
+
+                {%- if set_on -%}
+                  {%- assign set_id = section.id | append: '-' | append: oi | append: '-set' -%}
+                  <div class="pack pack--set" data-option-item>
+                    <span class="pack__badge pack__badge--set">Set offer</span>
+                    <input type="radio" id="Opt-{{ set_id }}" name="option-{{ oi }}" value="__set">
+                    <label for="Opt-{{ set_id }}">
+                      <span class="pack__radio"></span>
+                      <span>
+                        <span class="pack__name">{{ set_label }}</span>
+                        <span class="pack__note">1 Cap + Neck Wrap, wrap {{ settings.set_offer_percent }}% off</span>
+                      </span>
+                      <span class="pack__price" data-set-price></span>
+                    </label>
+                  </div>
+                {%- endif -%}
               </div>
+
+              {%- if set_on and set_addon.has_only_default_variant == false -%}
+                <div class="set-addon" data-set-addon hidden>
+                  <label for="SetAddon-{{ section.id }}">Neck Wrap option</label>
+                  <select id="SetAddon-{{ section.id }}" data-set-addon-variant>
+                    {%- for v in set_addon.variants -%}
+                      {%- if v.available -%}<option value="{{ v.id }}">{{ v.title }}</option>{%- endif -%}
+                    {%- endfor -%}
+                  </select>
+                </div>
+              {%- endif -%}
 
             {%- elsif oname contains 'color' or oname contains 'colour' -%}
               <div class="swatches">
@@ -243,6 +281,17 @@
         "id": {{ product.id }},
         "options": {{ product.options | json }},
         "packIndex": {% if pack_index != nil %}{{ pack_index }}{% else %}null{% endif %},
+        "set": {% if set_on -%}
+          {
+            "label": {{ set_label | json }},
+            "percent": {{ settings.set_offer_percent | default: 0 }},
+            "variants": [
+              {%- for v in set_addon.variants -%}
+                { "id": {{ v.id }}, "title": {{ v.title | json }}, "price": {{ v.price }}, "available": {{ v.available | json }} }{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            ]
+          }
+        {%- else -%}null{%- endif -%},
         "variants": [
           {%- for v in product.variants -%}
             {

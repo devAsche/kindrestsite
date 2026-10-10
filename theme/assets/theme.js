@@ -139,7 +139,7 @@
   }
 
   /* ------------------------------------------------------------------
-     Intro — the bright screen dims into a night sky (once per session)
+     Intro — a quick (~1s) dim into a night sky (once per session)
   ------------------------------------------------------------------ */
   function initIntro() {
     var intro = $('#Intro');
@@ -152,13 +152,13 @@
       if (done) return;
       done = true;
       intro.classList.add('is-done');
-      setTimeout(function () { intro.remove(); document.documentElement.classList.remove('show-intro'); }, 850);
+      setTimeout(function () { intro.remove(); document.documentElement.classList.remove('show-intro'); }, 380);
     }
     initStarfields(intro);
     requestAnimationFrame(function () {
-      setTimeout(function () { intro.classList.add('is-dim'); }, 650);
+      setTimeout(function () { intro.classList.add('is-dim'); }, 60);
     });
-    setTimeout(finish, 3400);
+    setTimeout(finish, 1000);
     intro.addEventListener('click', finish);
     document.addEventListener('keydown', function onKey() { finish(); document.removeEventListener('keydown', onKey); });
   }
@@ -245,12 +245,24 @@
 
   /* ------------------------------------------------------------------
      Product form
+     A "Cap + Neck Wrap" set card can sit next to the pack options (value "__set").
+     It selects the single-cap variant and adds the Neck Wrap to the cart with it;
+     the wrap discount itself is Shopify's automatic discount.
   ------------------------------------------------------------------ */
+  var SET_VALUE = '__set';
+
   function BuyForm(root) {
     this.root = root;
     var json = $('[data-product-json]', root);
     if (!json) return;
+    root._buyForm = this;
     this.product = JSON.parse(json.textContent);
+    this.set = this.product.set || null;
+    this.isSet = false;
+    this.setPrice = null;
+    this.setInput = $('input[value="' + SET_VALUE + '"]', root);
+    this.setAddonSelect = $('[data-set-addon-variant]', root);
+    this.setAddonBox = $('[data-set-addon]', root);
     this.form = $('form', root);
     this.idInput = $('input[name="id"]', root);
     this.atc = $('[data-atc]', root);
@@ -263,11 +275,26 @@
     this.initSticky();
     this.onChange();
   }
+  BuyForm.prototype.singlePackValue = function () {
+    var idx = this.product.packIndex;
+    if (idx === null || idx === undefined) return null;
+    for (var i = 0; i < this.product.variants.length; i++) {
+      var v = this.product.variants[i];
+      if (packCount(v.options[idx]) === 1) return v.options[idx];
+    }
+    return null;
+  };
   BuyForm.prototype.selectedOptions = function () {
     var opts = [];
+    this.isSet = false;
     for (var i = 0; i < this.product.options.length; i++) {
       var checked = $('input[name="option-' + i + '"]:checked', this.root);
-      opts.push(checked ? checked.value : null);
+      var val = checked ? checked.value : null;
+      if (val === SET_VALUE) {
+        this.isSet = !!this.set;
+        val = this.singlePackValue();
+      }
+      opts.push(val);
     }
     return opts;
   };
@@ -276,15 +303,37 @@
       return v.options.every(function (o, i) { return o === opts[i]; });
     });
   };
+  BuyForm.prototype.addonVariant = function () {
+    if (!this.set || !this.set.variants || !this.set.variants.length) return null;
+    var id = this.setAddonSelect ? Number(this.setAddonSelect.value) : null;
+    var vs = this.set.variants;
+    var match = id ? vs.find(function (v) { return v.id === id; }) : null;
+    return match || vs.find(function (v) { return v.available; }) || vs[0];
+  };
+  // Price of the cap + discounted wrap. Returns null when the set is not possible.
+  BuyForm.prototype.setPricing = function (capVariant) {
+    var addon = this.addonVariant();
+    if (!addon || !capVariant) return null;
+    var off = Math.round(addon.price * (this.set.percent || 0) / 100);
+    return {
+      total: capVariant.price + addon.price - off,
+      separate: capVariant.price + addon.price,
+      saving: off,
+      addon: addon,
+      available: capVariant.available && addon.available
+    };
+  };
   BuyForm.prototype.onChange = function () {
     var opts = this.selectedOptions();
     var variant = this.findVariant(opts);
     var self = this;
+    var packIdx = this.product.packIndex;
 
     // Labels next to option names
     opts.forEach(function (val, i) {
       var label = $('[data-option-value="' + i + '"]', self.root);
-      if (label) label.textContent = val || '';
+      if (!label) return;
+      label.textContent = (self.isSet && i === packIdx) ? self.set.label : (val || '');
     });
 
     // Per-value prices on pack cards (depend on the other selected options)
@@ -298,46 +347,78 @@
       el.innerHTML = html;
     });
 
+    // Set card price (single cap in the selected color + discounted wrap)
+    var setCardPricing = null;
+    if (this.set && packIdx !== null && packIdx !== undefined) {
+      var so = opts.slice(); so[packIdx] = this.singlePackValue();
+      setCardPricing = this.setPricing(this.findVariant(so));
+      var setPriceEl = $('[data-set-price]', this.root);
+      if (setPriceEl) {
+        setPriceEl.innerHTML = setCardPricing
+          ? formatMoney(setCardPricing.total) + '<span class="pack__save">Save ' + formatMoney(setCardPricing.saving) + '</span>'
+          : '';
+      }
+    }
+    if (this.setAddonBox) this.setAddonBox.hidden = !this.isSet;
+
     // Availability marking on option inputs
     $$('input[name^="option-"]', this.root).forEach(function (input) {
+      var item = input.closest('[data-option-item]');
+      if (!item) return;
+      if (input.value === SET_VALUE) {
+        item.classList.toggle('is-unavailable', !setCardPricing || !setCardPricing.available);
+        return;
+      }
       var idx = Number(input.name.split('-')[1]);
       var o = opts.slice(); o[idx] = input.value;
       var v = self.findVariant(o);
-      input.closest('[data-option-item]').classList.toggle('is-unavailable', !v || !v.available);
+      item.classList.toggle('is-unavailable', !v || !v.available);
     });
 
     this.variant = variant;
     if (!variant) {
+      this.setPrice = null;
       this.setAtc(false, 'Unavailable');
       return;
     }
     this.idInput.value = variant.id;
+    var sp = this.isSet ? this.setPricing(variant) : null;
+    this.setPrice = sp;
 
     // Price block
     var priceNow = $('[data-price]', this.root);
     var priceWas = $('[data-compare]', this.root);
     var save = $('[data-save]', this.root);
-    if (priceNow) priceNow.textContent = formatMoney(variant.price);
-    // Strike-through is only for a real compare-at price set in Shopify. A multi-pack saving is
-    // shown as a comparison with buying the single item separately, never as a former price.
-    var hasCompare = variant.compare_at_price > variant.price;
-    var pack = hasCompare ? null : this.packSaving(variant);
     var priceRef = $('[data-price-ref]', this.root);
-    if (priceWas) {
-      priceWas.textContent = hasCompare ? formatMoney(variant.compare_at_price) : '';
-      priceWas.hidden = !hasCompare;
-    }
-    if (save) {
-      if (hasCompare) save.textContent = 'You save ' + formatMoney(variant.compare_at_price - variant.price);
-      else if (pack) save.textContent = 'You save ' + formatMoney(pack.amount) + ' vs. buying ' + pack.count + ' separately';
-      save.hidden = !(hasCompare || pack);
-    }
-    if (priceRef) {
-      if (pack) priceRef.textContent = pack.count + ' ' + pack.unit + ' bought separately: ' + formatMoney(pack.separate);
-      priceRef.hidden = !pack;
+    if (sp) {
+      // Set: shown as a comparison with buying both separately, never as a former price.
+      if (priceNow) priceNow.textContent = formatMoney(sp.total);
+      if (priceWas) { priceWas.textContent = ''; priceWas.hidden = true; }
+      if (save) { save.textContent = 'You save ' + formatMoney(sp.saving) + ' vs. buying separately'; save.hidden = false; }
+      if (priceRef) { priceRef.textContent = 'Cap + Neck Wrap bought separately: ' + formatMoney(sp.separate); priceRef.hidden = false; }
+    } else {
+      if (priceNow) priceNow.textContent = formatMoney(variant.price);
+      // Strike-through is only for a real compare-at price set in Shopify. A multi-pack saving is
+      // shown as a comparison with buying the single item separately, never as a former price.
+      var hasCompare = variant.compare_at_price > variant.price;
+      var pack = hasCompare ? null : this.packSaving(variant);
+      if (priceWas) {
+        priceWas.textContent = hasCompare ? formatMoney(variant.compare_at_price) : '';
+        priceWas.hidden = !hasCompare;
+      }
+      if (save) {
+        if (hasCompare) save.textContent = 'You save ' + formatMoney(variant.compare_at_price - variant.price);
+        else if (pack) save.textContent = 'You save ' + formatMoney(pack.amount) + ' vs. buying ' + pack.count + ' separately';
+        save.hidden = !(hasCompare || pack);
+      }
+      if (priceRef) {
+        if (pack) priceRef.textContent = pack.count + ' ' + pack.unit + ' bought separately: ' + formatMoney(pack.separate);
+        priceRef.hidden = !pack;
+      }
     }
 
-    this.setAtc(variant.available, variant.available ? null : 'Sold out');
+    var available = sp ? sp.available : variant.available;
+    this.setAtc(available, available ? null : 'Sold out');
 
     if (this.updateUrl && window.history.replaceState) {
       var url = new URL(window.location.href);
@@ -372,12 +453,31 @@
     var m = String(value).match(/(\d+)/);
     return m ? parseInt(m[1], 10) : 1;
   }
+  BuyForm.prototype.currentPrice = function () {
+    if (this.setPrice) return this.setPrice.total;
+    return this.variant ? this.variant.price : 0;
+  };
+  BuyForm.prototype.cartItems = function () {
+    var items = [{ id: this.variant.id, quantity: 1 }];
+    if (this.setPrice) items.push({ id: this.setPrice.addon.id, quantity: 1 });
+    return items;
+  };
+  BuyForm.prototype.selectSet = function () {
+    if (!this.setInput) return false;
+    this.setInput.checked = true;
+    this.onChange();
+    return true;
+  };
   BuyForm.prototype.setAtc = function (enabled, text) {
     var label = $('[data-atc-label]', this.root);
     var price = $('[data-atc-price]', this.root);
     this.atc.disabled = !enabled;
     if (label) label.textContent = text || this.atc.getAttribute('data-label');
-    if (price) price.textContent = enabled && this.variant ? '· ' + formatMoney(this.variant.price) : '';
+    if (price) price.textContent = enabled && this.variant ? '· ' + formatMoney(this.currentPrice()) : '';
+  };
+  BuyForm.prototype.isAvailable = function () {
+    if (!this.variant) return false;
+    return this.setPrice ? this.setPrice.available : this.variant.available;
   };
   BuyForm.prototype.onSubmit = function (e) {
     e.preventDefault();
@@ -385,7 +485,7 @@
     var self = this;
     this.atc.classList.add('is-loading');
     if (this.error) this.error.textContent = '';
-    Cart.add([{ id: this.variant.id, quantity: 1 }], this.atc)
+    Cart.add(this.cartItems(), this.atc)
       .catch(function (err) { if (self.error) self.error.textContent = err.message || 'Something went wrong. Please try again.'; })
       .then(function () { self.atc.classList.remove('is-loading'); });
   };
@@ -396,9 +496,9 @@
     var self = this;
     var btn = $('[data-sticky-atc]', bar);
     btn.addEventListener('click', function () {
-      if (!self.variant || !self.variant.available) return;
+      if (!self.isAvailable()) return;
       btn.classList.add('is-loading');
-      Cart.add([{ id: self.variant.id, quantity: 1 }], btn).catch(function () {
+      Cart.add(self.cartItems(), btn).catch(function () {
         self.root.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }).then(function () { btn.classList.remove('is-loading'); });
     });
@@ -413,10 +513,37 @@
   BuyForm.prototype.syncSticky = function () {
     if (!this.sticky || !this.variant) return;
     var v = this.variant;
-    $('[data-sticky-variant]', this.sticky).textContent = v.title + ' · ' + formatMoney(v.price);
+    var packIdx = this.product.packIndex;
+    var title = v.title;
+    if (this.setPrice) {
+      var parts = v.options.filter(function (o, i) { return i !== packIdx; });
+      parts.push(this.set.label);
+      title = parts.join(' / ');
+    }
+    $('[data-sticky-variant]', this.sticky).textContent = title + ' · ' + formatMoney(this.currentPrice());
     var b = $('[data-sticky-atc]', this.sticky);
-    b.disabled = !v.available;
+    b.disabled = !this.isAvailable();
   };
+
+  /* Links that pre-select the set (e.g. hero offer, announcement "?set=1") */
+  function initSetLinks() {
+    function firstForm() {
+      var root = $('[data-buy]');
+      return root && root._buyForm ? root._buyForm : null;
+    }
+    var wantsSet = false;
+    try { wantsSet = new URLSearchParams(window.location.search).get('set') === '1'; } catch (e) { /* ignore */ }
+    if (wantsSet) {
+      var f = firstForm();
+      if (f) f.selectSet();
+    }
+    $$('[data-select-set]').forEach(function (a) {
+      a.addEventListener('click', function () {
+        var f = firstForm();
+        if (f) f.selectSet();
+      });
+    });
+  }
 
   /* ------------------------------------------------------------------
      Gallery
@@ -584,11 +711,12 @@
         var upId = Number(up.getAttribute('data-product-id'));
         var hasUpsell = cart.items.some(function (it) { return it.product_id === upId; });
         up.hidden = cart.item_count === 0 || hasUpsell;
-        // Set offer: only promise the discount when a qualifying cap (e.g. "1 Cap") is in the cart.
+        // Set offer: only promise the discount when a qualifying cap is in the cart.
+        // An empty qualifying value means any variant of the cap qualifies.
         var capId = Number(up.getAttribute('data-offer-cap'));
-        var qual = up.getAttribute('data-offer-value');
+        var qual = up.getAttribute('data-offer-value') || '';
         var qualifies = !!capId && cart.items.some(function (it) {
-          return it.product_id === capId && (it.variant_options || []).indexOf(qual) > -1;
+          return it.product_id === capId && (!qual || (it.variant_options || []).indexOf(qual) > -1);
         });
         up.classList.toggle('is-offer', qualifies);
       }
@@ -710,6 +838,7 @@
     initHeroSwatches();
     $$('[data-gallery]').forEach(function (g) { g._gallery = new Gallery(g); });
     $$('[data-buy]').forEach(function (r) { new BuyForm(r); });
+    initSetLinks();
     Cart.init();
   });
 })();

@@ -28,6 +28,7 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ 'photo.css' | asset_url | stylesheet_tag }}
+    {{ 'kr-extra.css' | asset_url | stylesheet_tag }}
     <style>:root { --night-texture: url('{{ 'kindrest-night-texture.webp' | file_url }}'); }</style>
     <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
@@ -58,7 +59,6 @@
         <div class="intro__night">
           <canvas class="intro__stars" data-starfield data-density="0.00025"></canvas>
         </div>
-        <p class="intro__line intro__line--1">{{ settings.intro_line_1 }}</p>
         <p class="intro__line intro__line--2">{{ settings.intro_line_2 }}</p>
         <button type="button" class="intro__skip" data-intro-skip tabindex="-1">Skip</button>
       </div>

@@ -1,0 +1,30 @@
+/* Kindrest — additions (set offer card, hero offer, shorter intro) */
+
+/* Set offer card in the buy box */
+.pack--set label { border-style: dashed; border-color: #d9c48e; background: linear-gradient(180deg, #fffdf6, #fff); }
+.pack--set input:checked + label { border-style: solid; border-color: var(--night-700); }
+.pack__badge--set { background: #c9a54a; color: #fff; }
+.pack__badge--set::before { color: #fff; }
+.pack__save { display: block; font-size: 12px; font-weight: 800; color: #8a6a1c; }
+.set-addon { margin-top: 12px; }
+.set-addon[hidden] { display: none; }
+.set-addon label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.set-addon select { width: 100%; min-height: 46px; border-radius: 999px; border: 1.5px solid var(--line); padding: 0 14px; background: #fff; }
+
+/* Set offer pill in the hero */
+.hero__offer {
+  display: inline-flex; align-items: center; gap: 8px; margin: 0 0 22px; padding: 9px 16px;
+  border-radius: 999px; background: rgba(246, 231, 184, 0.14); border: 1px solid rgba(246, 231, 184, 0.5);
+  color: var(--star); font-size: 14px; font-weight: 700; line-height: 1.35; text-decoration: none;
+  transition: background 0.2s;
+}
+.hero__offer:hover { background: rgba(246, 231, 184, 0.24); }
+@media (max-width: 860px) { .hero__offer { font-size: 13px; margin-bottom: 18px; } }
+
+/* Shorter intro (~1s): bright screen dims straight into the night with one line */
+.intro__line--1 { display: none; }
+.intro__line { transition: opacity 0.3s var(--ease); }
+.intro__screen { transition: opacity 0.45s var(--ease) 0s; }
+.intro__night { transition: opacity 0.4s var(--ease) 0s; }
+.intro.is-dim .intro__line--2 { transition-delay: 0.15s; }
+.intro.is-done { transition: opacity 0.35s var(--ease); }

@@ -21,6 +21,9 @@
       {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
       <h1 class="hero__title">{{ section.settings.title }}</h1>
       {%- if section.settings.text != blank -%}<p class="hero__sub">{{ section.settings.text }}</p>{%- endif -%}
+      {%- if settings.enable_set_offer and settings.set_offer_addon != blank and settings.set_offer_addon.available -%}
+        {% render 'set-offer', mode: 'hero', addon: settings.set_offer_addon %}
+      {%- endif -%}
       <div class="hero__ctas">
         {%- if section.settings.cta_label != blank -%}
           <a class="btn btn--moon" href="{{ section.settings.cta_link | default: '#buy' }}">{{ section.settings.cta_label }}</a>

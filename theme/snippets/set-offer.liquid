@@ -2,26 +2,33 @@
   Shared values for the "Cap + Neck Wrap" set offer (theme settings → Set offer).
   The percentage mirrors the automatic discount configured in Shopify (themes cannot read
   automatic discount definitions). Cart displays always use the real applied discount data.
-  Usage: {% render 'set-offer', mode: 'pair' | 'note', addon: product, cap: product %}
+  An empty "Qualifying option value" means any variant of the cap qualifies (1 Cap or 2-Pack).
+  Usage: {% render 'set-offer', mode: 'pair' | 'note' | 'hero', addon: product, cap: product %}
 {%- endcomment -%}
 {%- liquid
   assign pct = settings.set_offer_percent | default: 0
   assign keep = 100 | minus: pct
   assign base_price = addon.price
   assign offer_price = base_price | times: keep | divided_by: 100
-  assign qual = settings.set_offer_qualifying_value
+  assign qual = settings.set_offer_qualifying_value | strip
 -%}
 {%- if mode == 'pair' -%}
   <span class="offer-pill">Set offer · {{ pct }}% off</span>
   <div class="pair__meta"><span class="pair__name">{{ addon.title }}</span></div>
-  <p class="pair__offer-price"><strong>{{ offer_price | money }} with a {{ qual }}</strong> <span>· {{ base_price | money }} on its own</span></p>
+  <p class="pair__offer-price"><strong>{{ offer_price | money }} with {% if qual != blank %}a {{ qual }}{% else %}your cap{% endif %}</strong> <span>· {{ base_price | money }} on its own</span></p>
   {%- if settings.set_offer_note != blank -%}<p class="pair__fine">{{ settings.set_offer_note }}</p>{%- endif -%}
 {%- elsif mode == 'note' -%}
   <div class="offer-note">
     <span class="offer-note__star" aria-hidden="true">✦</span>
     <p>
-      <strong>Set offer:</strong> {{ pct }}% off this wrap ({{ offer_price | money }}) when you buy it with a {{ cap.title }} ({{ qual }}). Applied automatically in your cart. Not valid with the 2-Pack.
-      {% if cap != blank %}<a href="{{ cap.url }}">Shop the Cap&nbsp;→</a>{% endif %}
+      <strong>Set offer:</strong> {{ pct }}% off this wrap ({{ offer_price | money }}) when you buy it with {% if qual != blank %}a {{ cap.title }} ({{ qual }}){% else %}any {{ cap.title }}, 1 Cap or 2-Pack{% endif %}. Applied automatically in your cart.{% if qual != blank %} Not valid with the 2-Pack.{% endif %}
+      {% if cap != blank %}<a href="{{ cap.url }}?set=1#buy">Shop the set&nbsp;→</a>{% endif %}
     </p>
   </div>
+{%- elsif mode == 'hero' -%}
+  <a class="hero__offer" href="#buy" data-select-set>
+    <span aria-hidden="true">✦</span>
+    <span>Set offer: add the Neck Wrap to any cap, {{ pct }}% off ({{ offer_price | money }})</span>
+    <span aria-hidden="true">→</span>
+  </a>
 {%- endif -%}

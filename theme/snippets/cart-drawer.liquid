@@ -44,11 +44,14 @@
           endfor
           assign offer_on = false
           assign offer_qualifies = false
+          assign qual = settings.set_offer_qualifying_value | strip
           if settings.enable_set_offer and settings.set_offer_addon.id == up.id and settings.set_offer_cap != blank
             assign offer_on = true
             for item in cart.items
-              if item.product_id == settings.set_offer_cap.id and item.variant.options contains settings.set_offer_qualifying_value
-                assign offer_qualifies = true
+              if item.product_id == settings.set_offer_cap.id
+                if qual == blank or item.variant.options contains qual
+                  assign offer_qualifies = true
+                endif
               endif
             endfor
           endif
@@ -56,7 +59,7 @@
           assign offer_price = up.price | times: offer_keep | divided_by: 100
         -%}
         <div class="upsell{% if offer_qualifies %} is-offer{% endif %}" data-upsell data-product-id="{{ up.id }}" data-variant="{{ up.selected_or_first_available_variant.id }}"
-          {% if offer_on %}data-offer-cap="{{ settings.set_offer_cap.id }}" data-offer-value="{{ settings.set_offer_qualifying_value | escape }}"{% endif %}
+          {% if offer_on %}data-offer-cap="{{ settings.set_offer_cap.id }}" data-offer-value="{{ qual | escape }}"{% endif %}
           {% if in_cart or cart.item_count == 0 %}hidden{% endif %}>
           <div class="upsell__label upsell__when-plain">{{ settings.upsell_label }}</div>
           {%- if offer_on -%}<div class="upsell__label upsell__when-offer">Set offer · {{ settings.set_offer_percent }}% off with your cap</div>{%- endif -%}
